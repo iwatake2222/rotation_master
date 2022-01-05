@@ -29,9 +29,11 @@ ToDo
 
 # License
 - Rotation Master
-- https://github.com/iwatake2222/rotation_master
 - Copyright 2021 iwatake2222
 - [Licensed under the Apache License, Version 2.0](LICENSE)
 
 # Acknowledgements
 - [NOTICE.md](NOTICE.md)
+- This project is inspired by 3D Rotation Converter
+    - https://www.andre-gaschler.com/rotationconverter/
+    - https://github.com/gaschler/rotationconverter
