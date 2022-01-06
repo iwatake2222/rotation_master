@@ -32,3 +32,10 @@ set(GLEW_DIR "${CMAKE_CURRENT_LIST_DIR}/third_party/glew/")
 add_subdirectory("${GLEW_DIR}/build/cmake/" glew)
 target_link_libraries(${ProjectName} glew_s)
 target_include_directories(${ProjectName} PUBLIC "${GLEW_DIR}/include/")
+
+# Add test module
+option(BUILD_TESTS "BUILD_TESTS" ON)
+if (BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(./test)
+endif()
