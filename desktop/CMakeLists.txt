@@ -57,6 +57,8 @@ add_subdirectory(./projection_matrix)
 target_link_libraries(${ProjectName} ProjectionMatrix)
 add_subdirectory(./transformation_matrix)
 target_link_libraries(${ProjectName} TransformationMatrix)
+add_subdirectory(./gl_helper)
+target_link_libraries(${ProjectName} GlHelper)
 
 # Add test module
 option(BUILD_TESTS "BUILD_TESTS" ON)

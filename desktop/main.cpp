@@ -17,6 +17,7 @@ limitations under the License.
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <memory>
 
 /* for GLFW */
 #include <GL/glew.h>     /* this must be before including glfw*/
@@ -26,6 +27,13 @@ limitations under the License.
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+
+/* for my modules */
+#include "matrix.h"
+#include "transformation_matrix.h"
+#include "window.h"
+#include "shape.h"
+#include "object_data.h"
 
 /*** Macro ***/
 /* macro functions */
@@ -44,21 +52,14 @@ limitations under the License.
 int main(int argc, char *argv[])
 {
     /*** Initialize ***/
-    GLFWwindow* window;
-
-    /* Initialize GLFW */
+    /* Initialize OpenGL */
     RUN_CHECK(glfwInit() == GL_TRUE);
+    //std::atexit(glfwTerminate);
+    glfwSetTime(0.0);
 
-    /* Create a window (x4 anti-aliasing, OpenGL3.3 Core Profile)*/
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    RUN_CHECK(window = glfwCreateWindow(720, 480, "main", nullptr, nullptr));
-    glfwMakeContextCurrent(window);
-    
-    /* Ensure not to miss input */
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    /* Initialize window class */
+    Window my_window;
+    my_window.LookAt({ 0.0f, 1.5f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
 
     /* Initialize ImGui */
     /* imgui:  Setup Dear ImGui context */
@@ -73,7 +74,7 @@ int main(int argc, char *argv[])
     //ImGui::StyleColorsClassic();
 
     /* imgui:  Setup Platform/Renderer backends */
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(my_window.GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
     /* imgui: state */
@@ -81,10 +82,40 @@ int main(int argc, char *argv[])
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    /* Create shape */
+    std::unique_ptr<Shape> cube0(new ShapeSolid(ObjectData::CubeTriangleVertex));
+    std::unique_ptr<Shape> cube1(new ShapeIndex(ObjectData::CubeWireVertex, ObjectData::CubeWireIndex));
+    std::unique_ptr<Shape> ground(ObjectData::CreateGround(10.0f, 1.0f));
+    std::unique_ptr<Shape> axes(ObjectData::CreateAxes(1.5f, 0.2f, { 1.0f, 0.4f, 0.4f }, { 0.4f, 1.0f, 0.4f }, { 0.4f, 0.4f, 1.0f }));
+    std::unique_ptr<Shape> object_axes(ObjectData::CreateAxes(1.0f, 0.1f, { 0.8f, 0.0f, 0.0f }, { 0.0f, 0.8f, 0.0f }, { 0.0f, 0.0f, 0.8f }));
+    std::unique_ptr<Shape> object(ObjectData::CreateMonolith(0.5f, 0.8f, 0.01f, { 0.3f, 0.75f, 1.0f }, { 0.5f, 0.5f, 0.5f }));
 
     /*** Start loop ***/
     while(1) {
-        glfwPollEvents();
+        if (my_window.FrameStart() == false) break;
+
+        glLineWidth(0.5f);
+        ground->Draw(my_window.GetViewProjection(), TransformationMatrix::Translate(0.0f, -1.0f, 0.0f));
+        glLineWidth(2.0f);
+        axes->Draw(my_window.GetViewProjection(), Matrix::Identity(4));
+        
+        Matrix model = Matrix::Identity(4);
+        model = TransformationMatrix::Rotate(static_cast<GLfloat>(glfwGetTime()), 0.0f, 1.0f, 0.0f);
+        object->Draw(my_window.GetViewProjection(), model);
+        glLineWidth(10.0f);
+        //glDisable(GL_DEPTH_TEST);
+        object_axes->Draw(my_window.GetViewProjection(), model);
+        //glEnable(GL_DEPTH_TEST);
+
+        glLineWidth(1.0f);
+        const Matrix r = TransformationMatrix::Rotate(static_cast<GLfloat>(glfwGetTime()), 0.0f, 1.0f, 0.0f);
+        const Matrix translation0 = TransformationMatrix::Translate(3.0f, 3.0f, 0.0f);
+        const Matrix model0 = translation0 * r;
+        cube0->Draw(my_window.GetViewProjection(), model0);
+        const Matrix translation1 = TransformationMatrix::Translate(3.0f, 0.0f, 0.0f);
+        const Matrix model1 = translation1 * r;
+        cube1->Draw(my_window.GetViewProjection(), model1);
+
 
         /* imgui:  Start the Dear ImGui frame */
         ImGui_ImplOpenGL3_NewFrame();
@@ -127,26 +158,21 @@ int main(int argc, char *argv[])
                 show_another_window = false;
             ImGui::End();
         }
-
-        /* Clear the screen */
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-
         /* imgui:  Rendering */
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        /* Swap buffers */
-        glfwSwapBuffers(window);
-
-        /* Check if the ESC key was pressed or the window was closed */
-        if (glfwWindowShouldClose(window) != 0 || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            break;
-        }
+        
+        my_window.SwapBuffers();
     }
 
     /*** Finalize ***/
+    /* imgui: cleanup */
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     /* Close OpenGL window and terminate GLFW */
+    //glfwDestroyWindow(window);
     glfwTerminate();
 
     return 0;
