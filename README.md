@@ -1,6 +1,6 @@
-# ---
+# +++++++++++++++++++++
 # Under development
-# ---
+# +++++++++++++++++++++
 
 
 # Rotation Master
@@ -20,30 +20,11 @@ Status | Build Type
 [![CMake](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml) | ubuntu-20.04, windows-2019, macos-10.15
 [![CodeQL](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml) | ubuntu-20.04
 
-## How to Run
-### Desktop
-ToDo
-
-### Browser
-ToDo
+## Manual
+https://github.com/iwatake2222/rotation_master/wiki/Manual
 
 ## How to Build
-### Desktop
-```
-docker create -it -v /mnt/c/iwatake/devel:/root/devel -v /etc/localtime:/etc/localtime:ro -e DISPLAY="192.168.1.2:0" -w /root/ -p 8888:8888  --name=ubuntu20_rotation_master ubuntu:20.04
-docker start ubuntu20_rotation_master
-docker exec -it ubuntu20_rotation_master bash
-
-apt update
-apt install -y cmake g++
-apt install -y libglu1-mesa-dev mesa-common-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
-cd <path-to-rotation_master>/desktop/
-mkdir -p build && cd build
-cmake ..
-make -j4
-./rotation_master
-```
-
+https://github.com/iwatake2222/rotation_master/wiki/How-to-Build
 
 # License
 - Rotation Master
