@@ -15,12 +15,8 @@ limitations under the License.
 /*** Include ***/
 #include <cstdint>
 #include <cstdio>
-#include <stdexcept>
-#include <array>
 #include <vector>
-#include <string>
-#include <memory>
-#include <algorithm>
+#include <stdexcept>
 
 #include "matrix.h"
 

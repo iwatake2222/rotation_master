@@ -16,14 +16,9 @@ limitations under the License.
 #define MATRIX_H
 
 /*** Include ***/
-/* for general */
 #include <cstdint>
 #include <cstdio>
-#include <stdexcept>
 #include <vector>
-#include <string>
-#include <memory>
-#include <algorithm>
 
 class Matrix
 {
