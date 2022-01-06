@@ -1,0 +1,10 @@
+name: "CodeQL Configuration"
+
+# The followings are invalid for C++...
+# So, manually ignore files on GitHub
+
+paths:
+  - desktop
+paths-ignore:
+  - "**/test/**"
+  - "**/third_party/**"
