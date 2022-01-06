@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 # Create project
 set(ProjectName "rotation_master")
@@ -13,6 +13,7 @@ add_executable(${ProjectName}
     main.cpp
 )
 
+## Add third party libraries
 # For OpenGL
 find_package(OpenGL REQUIRED)
 target_link_libraries(${ProjectName} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
@@ -21,7 +22,7 @@ target_include_directories(${ProjectName} PUBLIC ${OPENGL_INCLUDE_DIR})
 
 # For GLFW
 set(GLFW_DIR "${CMAKE_CURRENT_LIST_DIR}/third_party/glfw/")
-add_subdirectory(${GLFW_DIR} glfw)
+add_subdirectory(${GLFW_DIR})
 target_link_libraries(${ProjectName} glfw ${GLFW_LIBRARIES})
 target_include_directories(${ProjectName} PUBLIC "${GLFW_DIR}/include/")
 
@@ -29,7 +30,7 @@ target_include_directories(${ProjectName} PUBLIC "${GLFW_DIR}/include/")
 # add_definitions(-DBUILD_UTILS=off)
 # add_definitions(-DGLEW_STATIC)
 set(GLEW_DIR "${CMAKE_CURRENT_LIST_DIR}/third_party/glew/")
-add_subdirectory("${GLEW_DIR}/build/cmake/" glew)
+add_subdirectory("${GLEW_DIR}/build/cmake/")
 target_link_libraries(${ProjectName} glew_s)
 target_include_directories(${ProjectName} PUBLIC "${GLEW_DIR}/include/")
 
@@ -48,6 +49,11 @@ target_link_libraries(ImGui glfw ${GLFW_LIBRARIES})
 target_include_directories(ImGui PUBLIC "${GLFW_DIR}/include/")
 target_include_directories(ImGui PUBLIC ${IMGUI_DIR} "${IMGUI_DIR}/backends")
 target_link_libraries(${ProjectName} ImGui)
+
+## Add my submodules
+add_subdirectory(matrix)
+target_link_libraries(${ProjectName} Matrix)
+
 
 # Add test module
 option(BUILD_TESTS "BUILD_TESTS" ON)
