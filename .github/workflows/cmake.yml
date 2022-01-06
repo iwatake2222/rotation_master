@@ -1,0 +1,85 @@
+name: CMake
+
+on:
+  push:
+    tags: 'v*'
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    timeout-minutes: 10
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019, macos-10.15]
+        include:
+          - os: ubuntu-20.04
+            exe_name: rotation_master
+            artifact_name: rotation_master_ubuntu-20.04_x64.tgz
+          - os: windows-2019
+            exe_name: rotation_master.exe
+            artifact_name: rotation_master_windows-2019_x64.zip
+          - os: macos-10.15
+            exe_name: rotation_master
+            artifact_name: rotation_master_macos-10.15.tgz
+
+    steps:
+    - uses: actions/checkout@v2
+      # with:
+      #   fetch-depth: 1
+      #   submodules: recursive
+    - name: Checkout Submodules  # To avoid "RPC failed; curl 56 GnuTLS recv error (-54): Error in the pull function."
+      run: |
+        git config --global http.postBuffer 100M
+        git submodule update --init --recursive --recommend-shallow --depth 1
+    - name: Install requirements
+      shell: bash
+      run: |
+        if [[ "${{ matrix.os }}" == "ubuntu-20.04" ]]; then
+          sudo apt-get -y install cmake g++
+          sudo apt-get -y install libglu1-mesa-dev mesa-common-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+        elif [[ "${{ matrix.os }}" == "macos-10.15" ]]; then
+          echo "no need to install"
+        elif [[ "${{ matrix.os }}" == "windows-2019" ]]; then
+          echo "no need to install"
+        fi
+    - name: Configure CMake
+      run: cmake -S ${{github.workspace}}/desktop -B ${{github.workspace}}/desktop/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    - name: Build
+      run: cmake --build ${{github.workspace}}/desktop/build --config ${{env.BUILD_TYPE}}
+    - name: Test
+      working-directory: ${{github.workspace}}/desktop/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+    - name: Package
+      shell: bash
+      run: |
+        ls '${{github.workspace}}/desktop/build'
+        if [[ "${{ matrix.os }}" == "windows-2019" ]]
+        then
+          7z a ${{ matrix.artifact_name }} '${{github.workspace}}/desktop/build/Release/${{ matrix.exe_name }}'
+        else
+          tar czvf ${{ matrix.artifact_name }} -C ${{github.workspace}}/desktop/build ${{ matrix.exe_name }}
+        fi
+        ls
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: ${{ matrix.artifact_name }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        body_path: CHANGELOG.md
+        draft: true
+        files: |
+          ${{ matrix.artifact_name }}
+          LICENSE
+          NOTICE.md
+

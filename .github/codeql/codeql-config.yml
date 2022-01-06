@@ -1,0 +1,7 @@
+name: "CodeQL Configuration"
+
+paths:
+  - desktop
+paths-ignore:
+  - "**/test/**"
+  - "**/third_party/**"
