@@ -35,7 +35,7 @@ target_include_directories(${ProjectName} PUBLIC "${GLEW_DIR}/include/")
 
 # For ImGui (reference: example_glfw_opengl3/Makefile)
 set(IMGUI_DIR "${CMAKE_CURRENT_LIST_DIR}/third_party/imgui/")
-target_sources(${ProjectName} PRIVATE 
+add_library(ImGui
   ${IMGUI_DIR}/imgui.cpp
   ${IMGUI_DIR}/imgui_demo.cpp
   ${IMGUI_DIR}/imgui_draw.cpp
@@ -44,7 +44,10 @@ target_sources(${ProjectName} PRIVATE
   ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
   ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 )
-target_include_directories(${ProjectName} PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
+target_link_libraries(ImGui glfw ${GLFW_LIBRARIES})
+target_include_directories(ImGui PUBLIC "${GLFW_DIR}/include/")
+target_include_directories(ImGui PUBLIC ${IMGUI_DIR} "${IMGUI_DIR}/backends")
+target_link_libraries(${ProjectName} ImGui)
 
 # Add test module
 option(BUILD_TESTS "BUILD_TESTS" ON)
