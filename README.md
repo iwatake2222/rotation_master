@@ -18,7 +18,7 @@
 Status | Build Type
 ------ | ----------
 [![CMake](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml) | ubuntu-20.04, windows-2019, macos-10.15
-[![CodeQL](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml) | ubuntu-latest
+[![CodeQL](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml) | ubuntu-20.04
 
 ## How to Run
 ### Desktop

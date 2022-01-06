@@ -1,0 +1,38 @@
+name: Coverage
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    timeout-minutes: 10
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+      # with:
+      #   fetch-depth: 1
+      #   submodules: recursive
+    - name: Checkout Submodules  # To avoid "RPC failed; curl 56 GnuTLS recv error (-54): Error in the pull function."
+      run: |
+        git config --global http.postBuffer 100M
+        git submodule update --init --recursive --recommend-shallow --depth 1
+
+    - name: Install requirements
+      run: |
+        sudo apt-get -y install cmake g++
+        sudo apt-get -y install libglu1-mesa-dev mesa-common-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+
+    - name: Build and Run
+      working-directory: ./desktop
+      run: bash ./run_coverage.sh
+
+    - name: Upload Artifacts (code coverage)
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage-report
+        path: desktop/build_coverage/coverage/index.html
+        # path: desktop/build_coverage/coverage/*
