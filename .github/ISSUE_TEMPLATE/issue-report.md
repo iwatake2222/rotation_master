@@ -12,17 +12,17 @@ assignees: ''
 - Delete this section and explanation text in each section after you write your description
 - Use code blocks ( \` \` , \`\`\`  \`\`\` )
 
+## System information
+ - Hardware: [e.g. PC, Raspberry Pi 4, Jetson Nano]
+ - CPU: [e.g. Intel Core i7-11700 2.5GHz]
+ - OS: [e.g. Ubuntu 20.04]
+ - Commit id or version: [e.g. 57dddf66631bcfb23ccf56de006662ff10d2723b]
+
 ## Describe the issue
 A clear and concise description of what the issue is.
 
 ## Expected behavior
 A clear and concise description of what you expected to happen.
-
-## Environment
- - Hardware: [e.g. PC, Raspberry Pi 4, Jetson Nano]
- - CPU: [e.g. Intel Core i7-11700 2.5GHz]
- - OS: [e.g. Ubuntu 20.04]
- - Commit id [e.g. 57dddf66631bcfb23ccf56de006662ff10d2723b]
 
 ## To Reproduce
 Steps to reproduce the behavior:

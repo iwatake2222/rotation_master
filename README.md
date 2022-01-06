@@ -25,11 +25,26 @@ ToDo
 ToDo
 
 ## How to Build
-ToDo
+### Desktop
+```
+docker create -it -v /mnt/c/iwatake/devel:/root/devel -v /etc/localtime:/etc/localtime:ro -e DISPLAY="192.168.1.2:0" -w /root/ -p 8888:8888  --name=ubuntu20_rotation_master ubuntu:20.04
+docker start ubuntu20_rotation_master
+docker exec -it ubuntu20_rotation_master bash
+
+apt update
+apt install -y cmake g++
+apt install -y libglu1-mesa-dev mesa-common-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+cd <path-to-rotation_master>/desktop/
+mkdir -p build && cd build
+cmake ..
+make -j4
+./rotation_master
+```
+
 
 # License
 - Rotation Master
-- Copyright 2021 iwatake2222
+- Copyright 2022 iwatake2222
 - [Licensed under the Apache License, Version 2.0](LICENSE)
 
 # Acknowledgements
