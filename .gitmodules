@@ -4,3 +4,6 @@
 [submodule "desktop/test/third_party/googletest"]
 	path = desktop/test/third_party/googletest
 	url = https://github.com/google/googletest
+[submodule "desktop/third_party/imgui"]
+	path = desktop/third_party/imgui
+	url = https://github.com/ocornut/imgui
