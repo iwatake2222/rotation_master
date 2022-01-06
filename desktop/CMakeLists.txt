@@ -51,8 +51,10 @@ target_include_directories(ImGui PUBLIC ${IMGUI_DIR} "${IMGUI_DIR}/backends")
 target_link_libraries(${ProjectName} ImGui)
 
 ## Add my submodules
-add_subdirectory(matrix)
+add_subdirectory(./matrix)
 target_link_libraries(${ProjectName} Matrix)
+add_subdirectory(./projection_matrix)
+target_link_libraries(${ProjectName} ProjectionMatrix)
 
 
 # Add test module

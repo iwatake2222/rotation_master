@@ -25,3 +25,4 @@ include(${CMAKE_SOURCE_DIR}/cmakes/compile_option.cmake)
 # Add test modules
 add_subdirectory(./main)
 add_subdirectory(./matrix)
+add_subdirectory(./projection_matrix)
