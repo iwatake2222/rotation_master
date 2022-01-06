@@ -7,6 +7,7 @@ if [[ `id -u` -ne 0 ]]
 fi
 
 rm -rf build_coverage && mkdir -p build_coverage && cd build_coverage
+# find -name "*.gcda" | xargs rm
 cmake ../ -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=--coverage -DCMAKE_CXX_FLAGS=--coverage
 make -j4
 ctest

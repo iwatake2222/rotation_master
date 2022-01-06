@@ -55,7 +55,8 @@ add_subdirectory(./matrix)
 target_link_libraries(${ProjectName} Matrix)
 add_subdirectory(./projection_matrix)
 target_link_libraries(${ProjectName} ProjectionMatrix)
-
+add_subdirectory(./transformation_matrix)
+target_link_libraries(${ProjectName} TransformationMatrix)
 
 # Add test module
 option(BUILD_TESTS "BUILD_TESTS" ON)
