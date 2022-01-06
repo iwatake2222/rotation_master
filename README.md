@@ -15,7 +15,10 @@
 ![](https://user-images.githubusercontent.com/11009876/148202305-43d7d04e-b680-4f58-99ce-03cf6f6d0dd0.jpg)
 
 ## CI Status
-ToDo
+Status | Build Type
+------ | ----------
+[![CMake](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml) | ubuntu-20.04, windows-2019, macos-10.15
+[![CodeQL](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml) | ubuntu-latest
 
 ## How to Run
 ### Desktop

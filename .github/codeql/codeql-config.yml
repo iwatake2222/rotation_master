@@ -1,5 +1,7 @@
 name: "CodeQL Configuration"
 
+# The followings are invalid for C++...
+
 paths:
   - desktop
 paths-ignore:
