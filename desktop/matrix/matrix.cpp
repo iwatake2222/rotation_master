@@ -15,6 +15,7 @@ limitations under the License.
 /*** Include ***/
 #include <cstdint>
 #include <cstdio>
+#include <climits>
 #include <vector>
 #include <stdexcept>
 
@@ -34,17 +35,22 @@ Matrix::Matrix()
 
 Matrix::Matrix(int32_t rows, int32_t cols)
 {
+    if (rows <= 0 || cols <= 0) {
+        throw std::invalid_argument("size must be greater than 0");
+    }
+    if (cols > INT_MAX / rows) {
+        throw std::overflow_error("Too huge size");
+    }
+
     m_rows = rows;
     m_cols = cols;
-    m_data_array = std::vector<float>(m_rows * m_cols);
+    m_data_array = std::vector<float>(static_cast<size_t>(m_rows) * m_cols);
 }
 
 Matrix::Matrix(int32_t rows, int32_t cols, float* data)
+    : Matrix(rows, cols)
 {
-    m_rows = rows;
-    m_cols = cols;
-    m_data_array = std::vector<float>(m_rows * m_cols);
-    std::copy(data, data + m_rows * m_cols, m_data_array.data());
+    std::copy(data, data + static_cast<size_t>(m_rows) * m_cols, m_data_array.data());
 }
 
 Matrix::Matrix(int32_t rows, int32_t cols, const std::vector<float>& data)
