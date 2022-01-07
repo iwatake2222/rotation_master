@@ -2,6 +2,8 @@
 # Under development
 # +++++++++++++++++++++
 
+![image](https://user-images.githubusercontent.com/11009876/148526709-ecfff1a4-e0e4-4cc5-ab08-d74964e935f2.png)
+
 
 # Rotation Master
 - Provide conversion between the following representations of 3D rotation and display the pose
@@ -11,8 +13,6 @@
     - Axis with angle magnitude
     - Euler Angle (Intrinsic(Mobile))
     - Euler Angle (Extrinsic(Fixed))
-
-![](https://user-images.githubusercontent.com/11009876/148202305-43d7d04e-b680-4f58-99ce-03cf6f6d0dd0.jpg)
 
 ## CI Status
 Status | Build Type
