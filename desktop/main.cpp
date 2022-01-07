@@ -16,23 +16,24 @@ limitations under the License.
 /* for general */
 #include <cstdint>
 #include <cstdio>
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <cstdlib>
+#include <string>
 #include <memory>
 
 /* for GLFW */
 #include <GLFW/glfw3.h>
 
-/* for ImGui */
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 /* for my modules */
 #include "matrix.h"
 #include "transformation_matrix.h"
-#include "window.h"
 #include "shape.h"
 #include "object_data.h"
+#include "container.h"
+#include "window.h"
+#include "ui.h"
+#include "converter.h"
 
 /*** Macro ***/
 /* macro functions */
@@ -53,37 +54,22 @@ int main(int argc, char *argv[])
     /*** Initialize ***/
     /* Initialize OpenGL */
     RUN_CHECK(glfwInit() == GL_TRUE);
-    //std::atexit(glfwTerminate);
     glfwSetTime(0.0);
 
     /* Initialize window class */
     Window my_window;
-    my_window.LookAt({ 0.0f, 1.5f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
+    my_window.LookAt({ 2.0f, 2.0f, 3.0f }, { -0.5f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
 
     /* Initialize ImGui */
-    /* imgui:  Setup Dear ImGui context */
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    Ui my_ui(my_window);
 
-    /* imgui:  Setup Dear ImGui style */
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
-    /* imgui:  Setup Platform/Renderer backends */
-    ImGui_ImplGlfw_InitForOpenGL(my_window.GetWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 130");
-
-    /* imgui: state */
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    /* Containers */
+    AngleUnit angle_unit;
+    InputContainer input_container;
+    OutputContainer output_container;
+    SettingContainer setting_container;
 
     /* Create shape */
-    std::unique_ptr<Shape> cube0 = std::make_unique<ShapeSolid>(ObjectData::CubeTriangleVertex);
-    std::unique_ptr<Shape> cube1 = std::make_unique<ShapeIndex>(ObjectData::CubeWireVertex, ObjectData::CubeWireIndex);
     std::unique_ptr<Shape> ground = ObjectData::CreateGround(10.0f, 1.0f);
     std::unique_ptr<Shape> axes = ObjectData::CreateAxes(1.5f, 0.2f, { 1.0f, 0.4f, 0.4f }, { 0.4f, 1.0f, 0.4f }, { 0.4f, 0.4f, 1.0f });
     std::unique_ptr<Shape> object_axes = ObjectData::CreateAxes(1.0f, 0.1f, { 0.8f, 0.0f, 0.0f }, { 0.0f, 0.8f, 0.0f }, { 0.0f, 0.0f, 0.8f });
@@ -93,85 +79,44 @@ int main(int argc, char *argv[])
     while(1) {
         if (my_window.FrameStart() == false) break;
 
-        glLineWidth(0.5f);
-        ground->Draw(my_window.GetViewProjection(), TransformationMatrix::Translate(0.0f, -1.0f, 0.0f));
-        glLineWidth(2.0f);
+        my_window.SetIsDarkMode(setting_container.is_dark_mode);
+
+        /* Draw bases */
+        if (setting_container.is_draw_ground) {
+            Shape::SetLineWidth(0.5f);
+            ground->Draw(my_window.GetViewProjection(), TransformationMatrix::Translate(0.0f, -1.0f, 0.0f));
+        }
+        Shape::SetLineWidth(2.0f);
         axes->Draw(my_window.GetViewProjection(), Matrix::Identity(4));
         
+        /* Draw monolith */
         Matrix model = Matrix::Identity(4);
-        model = TransformationMatrix::Rotate(static_cast<GLfloat>(glfwGetTime()), 0.0f, 1.0f, 0.0f);
+        model = TransformationMatrix::RotateX(output_container.mobile_euler_angle[0](0, 0)) * TransformationMatrix::RotateY(output_container.mobile_euler_angle[0](0, 1)) * TransformationMatrix::RotateZ(output_container.mobile_euler_angle[0](0, 2));
         object->Draw(my_window.GetViewProjection(), model);
-        glLineWidth(10.0f);
-        //glDisable(GL_DEPTH_TEST);
+        Shape::SetLineWidth(10.0f);
         object_axes->Draw(my_window.GetViewProjection(), model);
-        //glEnable(GL_DEPTH_TEST);
 
-        glLineWidth(1.0f);
-        const Matrix r = TransformationMatrix::Rotate(static_cast<GLfloat>(glfwGetTime()), 0.0f, 1.0f, 0.0f);
-        const Matrix translation0 = TransformationMatrix::Translate(3.0f, 3.0f, 0.0f);
-        const Matrix model0 = translation0 * r;
-        cube0->Draw(my_window.GetViewProjection(), model0);
-        const Matrix translation1 = TransformationMatrix::Translate(3.0f, 0.0f, 0.0f);
-        const Matrix model1 = translation1 * r;
-        cube1->Draw(my_window.GetViewProjection(), model1);
+        /* Draw UI */
+        my_ui.Update(my_window, angle_unit, input_container, output_container, setting_container);
 
-
-        /* imgui:  Start the Dear ImGui frame */
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
+        if (setting_container.is_reset_view_pressed) {
+            my_window.LookAt({ 2.0f, 2.0f, 3.0f }, { -0.5f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
         }
 
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
+        /* Convert representations of rotation */
+        Converter::Convert(input_container, output_container);
+        if (setting_container.is_update_input_pressed) {
+            Converter::UpdateInput(input_container, output_container);
         }
-        /* imgui:  Rendering */
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        
+        if (setting_container.is_reset_value_pressed) {
+            Converter::ResetValue(input_container, output_container);
+        }
+
+        /* Update display */
         my_window.SwapBuffers();
     }
-
+    
     /*** Finalize ***/
-    /* imgui: cleanup */
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    /* Close OpenGL window and terminate GLFW */
-    //glfwDestroyWindow(window);
     glfwTerminate();
 
     return 0;

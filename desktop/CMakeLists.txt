@@ -11,6 +11,9 @@ include(${CMAKE_SOURCE_DIR}/cmakes/compile_option.cmake)
 # Create executable file
 add_executable(${ProjectName}
     main.cpp
+    container.h
+    ui.h ui.cpp
+    converter.h converter.cpp
 )
 
 ## Add third party libraries

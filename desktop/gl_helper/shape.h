@@ -54,6 +54,10 @@ public:
     Shape(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list = {});
     virtual ~Shape() {}
     void Draw(const Matrix& viewprojection, const Matrix& model) const;
+
+public:
+    static void SetLineWidth(float width);
+
 private:
     virtual void Execute() const;
 
