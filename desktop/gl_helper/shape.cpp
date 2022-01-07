@@ -118,6 +118,11 @@ void Shape::Execute() const
     glDrawArrays(GL_LINES, 0, m_vertex_num);
 }
 
+void Shape::SetLineWidth(float width)
+{
+    glLineWidth(width);
+}
+
 ShapeIndex::ShapeIndex(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list)
     : Shape(vertex_list, index_list)
 {

@@ -35,15 +35,16 @@ private:
     static void CbWheel(GLFWwindow* window, double x, double y);
     static void CbKeyboard(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
 public:
-    Window(int32_t width = 1280, int32_t height = 1080, const char* title = "Rotation Master");
+    Window(int32_t width = 1440, int32_t height = 1080, const char* title = "Rotation Master");
     ~Window();
     void LookAt(const std::array<float, 3>& eye, const std::array<float, 3>& gaze, const std::array<float, 3>& up);
     bool FrameStart();
     void SwapBuffers();
     Matrix GetViewProjection(float fovy = 1.0f, float z_near = 0.1f, float z_far = 1000.0f);
     GLFWwindow* GetWindow();
-    bool GetIsDarkMode();
     void SetIsDarkMode(bool);
+    int32_t GetWidth();
+    int32_t GetHeight();
 
 private:
     void MoveCameraPosFromCameraCoordinate(float dx, float dy, float dz);

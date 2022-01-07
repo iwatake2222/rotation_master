@@ -33,7 +33,7 @@ limitations under the License.
 
 
 /*** Function ***/
-std::unique_ptr<Shape> ObjectData::CreateGround(float size, float interval, std::array<float, 3> color_vec3)
+std::unique_ptr<ShapeIndex> ObjectData::CreateGround(float size, float interval, std::array<float, 3> color_vec3)
 {
     GLuint index = 0;
     std::vector<Object::Vertex> vertex_list;
@@ -50,7 +50,7 @@ std::unique_ptr<Shape> ObjectData::CreateGround(float size, float interval, std:
         index_list.push_back(index++);
         index_list.push_back(index++);
     }
-    return std::make_unique<Shape>(ShapeIndex(vertex_list, index_list));
+    return std::make_unique<ShapeIndex>(vertex_list, index_list);
 }
 
 static std::vector<std::array<float, 3>> CreateArrowZPointList(float size, float arrow_size)
@@ -103,10 +103,10 @@ std::unique_ptr<Shape> ObjectData::CreateAxes(float size, float arrow_size, std:
         vertex_list.push_back({ point[0], point[1], point[2], color_z[0], color_z[1], color_z[2] });
     }
 
-    return std::make_unique<Shape>(Shape(vertex_list));
+    return std::make_unique<Shape>(vertex_list);
 }
 
-std::unique_ptr<Shape> ObjectData::CreateMonolith(float width, float height, float thickness, std::array<float, 3> color_front, std::array<float, 3> color_back)
+std::unique_ptr<ShapeSolid> ObjectData::CreateMonolith(float width, float height, float thickness, std::array<float, 3> color_front, std::array<float, 3> color_back)
 {
     std::vector<Object::Vertex> vertex_list;
     const std::vector<std::array<float, 3>> base_vertex_list {
@@ -172,7 +172,7 @@ std::unique_ptr<Shape> ObjectData::CreateMonolith(float width, float height, flo
             (color_front[0] + color_back[0]) / 2.0f, (color_front[1] + color_back[1]) / 2.0f, (color_front[2] + color_back[2]) / 2.0f });
     }
 
-    return std::make_unique<Shape>(ShapeSolid(vertex_list));
+    return std::make_unique<ShapeSolid>(vertex_list);
 }
 
 const std::vector<Object::Vertex> ObjectData::CubeWireVertex

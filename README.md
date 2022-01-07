@@ -20,8 +20,8 @@ Status | Build Type
 [![CMake](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/cmake.yml) | ubuntu-20.04, windows-2019, macos-10.15
 [![CodeQL](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml) | ubuntu-20.04
 
-## Manual
-https://github.com/iwatake2222/rotation_master/wiki/Manual
+## How to Use
+https://github.com/iwatake2222/rotation_master/wiki/How-to-Use
 
 ## How to Build
 https://github.com/iwatake2222/rotation_master/wiki/How-to-Build

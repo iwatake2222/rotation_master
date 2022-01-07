@@ -76,15 +76,20 @@ void Window::CbKeyboard(GLFWwindow* window, int32_t key, int32_t scancode, int32
 {
     Window* const instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
     if (instance) {
-        if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
-            instance->m_is_darkmode = !instance->m_is_darkmode;
-        }
+        //if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
+        //    instance->m_is_darkmode = !instance->m_is_darkmode;
+        //}
     }
 }
 
-bool Window::GetIsDarkMode()
+int32_t Window::GetWidth()
 {
-    return m_is_darkmode;
+    return m_width;
+}
+
+int32_t Window::GetHeight()
+{
+    return m_height;
 }
 
 void Window::SetIsDarkMode(bool is_darkmode)
@@ -187,9 +192,9 @@ bool Window::FrameStart()
         m_window = nullptr;
         return false;
     }
-    if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        return false;
-    }
+    //if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    //    return false;
+    //}
 
     glfwMakeContextCurrent(m_window);
     glfwPollEvents();
