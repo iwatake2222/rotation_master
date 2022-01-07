@@ -21,14 +21,15 @@ limitations under the License.
 #include <cstdio>
 #include <array>
 #include <vector>
+#include <memory>
 
-#include "Shape.h"
+#include "shape.h"
 
 namespace ObjectData
 {
-    Shape* CreateGround(float size, float interval, std::array<float, 3> color_vec3 = { 0.0f, 0.5f, 0.5f });
-    Shape* CreateAxes(float size, float arrow_size, std::array<float, 3> color_x, std::array<float, 3> color_y, std::array<float, 3> color_z);
-    Shape* CreateMonolith(float width, float height, float thickness, std::array<float, 3> color_front, std::array<float, 3> color_back);
+    std::unique_ptr<Shape> CreateGround(float size, float interval, std::array<float, 3> color_vec3 = { 0.0f, 0.5f, 0.5f });
+    std::unique_ptr<Shape> CreateAxes(float size, float arrow_size, std::array<float, 3> color_x, std::array<float, 3> color_y, std::array<float, 3> color_z);
+    std::unique_ptr<Shape> CreateMonolith(float width, float height, float thickness, std::array<float, 3> color_front, std::array<float, 3> color_back);
 
     extern const std::vector<Object::Vertex> CubeWireVertex;
     extern const std::vector<GLuint> CubeWireIndex;

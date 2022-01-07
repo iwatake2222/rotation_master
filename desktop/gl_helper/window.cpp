@@ -42,8 +42,8 @@ limitations under the License.
 
 /* Setting */
 static constexpr float KEY_SPEED = 3.0f; // 3 units / second
-static constexpr float MOUSE_ROT_SPEED = 0.005f;
-static constexpr float MOUSE_MOV_SPEED = 0.05f;
+static constexpr float MOUSE_ROT_SPEED = 0.001f;
+static constexpr float MOUSE_MOV_SPEED = 0.01f;
 static constexpr float MOUSE_WHEEL_SPEED = 1.0f;
 
 /*** Global variable ***/

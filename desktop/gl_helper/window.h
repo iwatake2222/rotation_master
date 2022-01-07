@@ -23,7 +23,6 @@ limitations under the License.
 #include <vector>
 
 /* for GLFW */
-#include <GL/glew.h>     /* this must be before including glfw*/
 #include <GLFW/glfw3.h>
 
 /* for my modules */

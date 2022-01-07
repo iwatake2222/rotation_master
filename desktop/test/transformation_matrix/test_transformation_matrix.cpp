@@ -16,9 +16,9 @@ limitations under the License.
 /* for general */
 #include <cstdint>
 #include <cstdio>
-#include <cstdlib>
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <cstdlib>
 #include <stdexcept>
 
 /* GoogleTest */

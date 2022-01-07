@@ -22,7 +22,6 @@ limitations under the License.
 #include <vector>
 
 /* for GLFW */
-#include <GL/glew.h>     /* this must be before including glfw*/
 #include <GLFW/glfw3.h>
 
 #include "matrix.h"
@@ -71,7 +70,7 @@ private:
 class ShapeIndex : public Shape
 {
 public:
-    ShapeIndex(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list) : Shape(vertex_list, index_list) {}
+    ShapeIndex(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list);
 private:
     virtual void Execute() const override;
 };
@@ -79,7 +78,7 @@ private:
 class ShapeSolid : public Shape
 {
 public:
-    ShapeSolid(const std::vector<Object::Vertex>& vertex_list) : Shape(vertex_list) {}
+    ShapeSolid(const std::vector<Object::Vertex>& vertex_list);
 private:
     virtual void Execute() const override;
 };
@@ -87,7 +86,7 @@ private:
 class ShapeSolidIndex : public Shape
 {
 public:
-    ShapeSolidIndex(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list) : Shape(vertex_list, index_list) {}
+    ShapeSolidIndex(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list);
 private:
     virtual void Execute() const override;
 };

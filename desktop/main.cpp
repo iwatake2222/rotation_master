@@ -20,7 +20,6 @@ limitations under the License.
 #include <memory>
 
 /* for GLFW */
-#include <GL/glew.h>     /* this must be before including glfw*/
 #include <GLFW/glfw3.h>
 
 /* for ImGui */
@@ -83,12 +82,12 @@ int main(int argc, char *argv[])
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     /* Create shape */
-    std::unique_ptr<Shape> cube0(new ShapeSolid(ObjectData::CubeTriangleVertex));
-    std::unique_ptr<Shape> cube1(new ShapeIndex(ObjectData::CubeWireVertex, ObjectData::CubeWireIndex));
-    std::unique_ptr<Shape> ground(ObjectData::CreateGround(10.0f, 1.0f));
-    std::unique_ptr<Shape> axes(ObjectData::CreateAxes(1.5f, 0.2f, { 1.0f, 0.4f, 0.4f }, { 0.4f, 1.0f, 0.4f }, { 0.4f, 0.4f, 1.0f }));
-    std::unique_ptr<Shape> object_axes(ObjectData::CreateAxes(1.0f, 0.1f, { 0.8f, 0.0f, 0.0f }, { 0.0f, 0.8f, 0.0f }, { 0.0f, 0.0f, 0.8f }));
-    std::unique_ptr<Shape> object(ObjectData::CreateMonolith(0.5f, 0.8f, 0.01f, { 0.3f, 0.75f, 1.0f }, { 0.5f, 0.5f, 0.5f }));
+    std::unique_ptr<Shape> cube0 = std::make_unique<ShapeSolid>(ObjectData::CubeTriangleVertex);
+    std::unique_ptr<Shape> cube1 = std::make_unique<ShapeIndex>(ObjectData::CubeWireVertex, ObjectData::CubeWireIndex);
+    std::unique_ptr<Shape> ground = ObjectData::CreateGround(10.0f, 1.0f);
+    std::unique_ptr<Shape> axes = ObjectData::CreateAxes(1.5f, 0.2f, { 1.0f, 0.4f, 0.4f }, { 0.4f, 1.0f, 0.4f }, { 0.4f, 0.4f, 1.0f });
+    std::unique_ptr<Shape> object_axes = ObjectData::CreateAxes(1.0f, 0.1f, { 0.8f, 0.0f, 0.0f }, { 0.0f, 0.8f, 0.0f }, { 0.0f, 0.0f, 0.8f });
+    std::unique_ptr<Shape> object = ObjectData::CreateMonolith(0.5f, 0.8f, 0.01f, { 0.3f, 0.75f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 
     /*** Start loop ***/
     while(1) {

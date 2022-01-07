@@ -21,7 +21,6 @@ limitations under the License.
 #include <cstdio>
 
 /* for GLFW */
-#include <GL/glew.h>     /* this must be before including glfw*/
 #include <GLFW/glfw3.h>
 
 namespace Shader

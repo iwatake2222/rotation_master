@@ -70,7 +70,7 @@ void Object::Bind() const
 }
 
 
-Shape::Shape(const std::vector<Object::Vertex>&vertex_list, const std::vector<GLuint>&index_list)
+Shape::Shape(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list)
 {
     /* Load Shader Program */
     static const GLchar vsrc[] =
@@ -103,7 +103,7 @@ Shape::Shape(const std::vector<Object::Vertex>&vertex_list, const std::vector<GL
     m_index_num = static_cast<GLsizei>(index_list.size());
 }
 
-void Shape::Draw(const Matrix & viewprojection, const Matrix & model) const
+void Shape::Draw(const Matrix& viewprojection, const Matrix& model) const
 {
     glUseProgram(m_program_id);
     const Matrix modelviewprojection = viewprojection * model;
@@ -118,15 +118,32 @@ void Shape::Execute() const
     glDrawArrays(GL_LINES, 0, m_vertex_num);
 }
 
+ShapeIndex::ShapeIndex(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list)
+    : Shape(vertex_list, index_list)
+{
+    // do nothing
+}
 
 void ShapeIndex::Execute() const
 {
     glDrawElements(GL_LINES, m_index_num, GL_UNSIGNED_INT, 0);
 }
 
+ShapeSolid::ShapeSolid(const std::vector<Object::Vertex>& vertex_list)
+    : Shape(vertex_list)
+{
+    // do nothing
+}
+
 void ShapeSolid::Execute() const
 {
     glDrawArrays(GL_TRIANGLES, 0, m_vertex_num);
+}
+
+ShapeSolidIndex::ShapeSolidIndex(const std::vector<Object::Vertex>& vertex_list, const std::vector<GLuint>& index_list)
+    : Shape(vertex_list, index_list)
+{
+    // do nothing
 }
 
 void ShapeSolidIndex::Execute() const
