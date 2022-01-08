@@ -31,7 +31,6 @@ namespace RotationMatrix
         YZX,
         ZXY,
         ZYX,
-        NUM,
     };
 
     /* All functions return 3x3 rotation matrix*/

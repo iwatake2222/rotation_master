@@ -42,16 +42,6 @@ static const char* EULER_ORDER_STR[]= {
     "ZYX",
 };
 
-enum class EULER_ORDER {
-    XYZ = 0,
-    XZY,
-    YXZ,
-    YZX,
-    ZXY,
-    ZYX,
-    NUM,
-};
-
 /*** Function ***/
 Ui::Ui(Window& window)
 {
@@ -270,7 +260,7 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
 
     ImGui::Text("Intrinsic (Mobile) Euler Angle");
     if (ImGui::BeginTable("Intrinsic (Mobile) Euler Angle", 4)) {
-        for (int32_t i = 0; i < static_cast<int32_t>(EULER_ORDER::NUM); i++) {
+        for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
             ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.mobile_euler_angle[i](0, 0)));
@@ -284,7 +274,7 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
 
     ImGui::Text("Extrinsic (Fixed) Euler Angle");
     if (ImGui::BeginTable("Extrinsic (Fixed) Euler Angle", 4)) {
-        for (int32_t i = 0; i < static_cast<int32_t>(EULER_ORDER::NUM); i++) {
+        for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
             ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.fixed_euler_angle[i](0, 0)));

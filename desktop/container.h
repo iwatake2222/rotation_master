@@ -112,7 +112,7 @@ public:
         axis_angle = Matrix(1, 4);
         quaternion = Matrix(1, 4);
         quaternion[3] = 1.0;
-        for (int32_t i = 0; i < sizeof(mobile_euler_angle) / sizeof(Matrix); i++) {
+        for (size_t i = 0; i < sizeof(mobile_euler_angle) / sizeof(Matrix); i++) {
             mobile_euler_angle[i] = Matrix(1, 3);
             fixed_euler_angle[i] = Matrix(1, 3);
         }
