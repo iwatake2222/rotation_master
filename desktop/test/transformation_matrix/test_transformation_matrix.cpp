@@ -150,7 +150,7 @@ TEST_F(TestTransformationMatrix, RotateZ)
 TEST_F(TestTransformationMatrix, Rotate)
 {
     Matrix mat_object(4, 1, {0, 20, 10, 1} );
-    Matrix mat_rot = TransformationMatrix::Rotate(Deg2Rad(30.0f), 0.1f, 0.2f, 0.5f);
+    Matrix mat_rot = TransformationMatrix::RotateAxisAngle(Deg2Rad(30.0f), 0.1f, 0.2f, 0.5f);
     Matrix mat_transformed = mat_rot * mat_object;
     
     // todo

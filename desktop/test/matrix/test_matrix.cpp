@@ -61,7 +61,7 @@ TEST_F(TestMatrix, Creation)
     EXPECT_THROW(Matrix mat1(0, 0), std::invalid_argument);
     EXPECT_THROW(Matrix mat1(1, 0), std::invalid_argument);
     EXPECT_THROW(Matrix mat1(0, 1), std::invalid_argument);
-    EXPECT_THROW(Matrix mat1(INT_MAX * 0.8, INT_MAX * 0.7), std::overflow_error);
+    EXPECT_THROW(Matrix mat1(static_cast<int32_t>(INT_MAX * 0.8), static_cast<int32_t>(INT_MAX * 0.7)), std::overflow_error);
     
     Matrix mat1(2, 3);
     EXPECT_EQ(0, mat1[0]);

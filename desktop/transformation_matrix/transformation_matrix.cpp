@@ -21,6 +21,7 @@ limitations under the License.
 #include <vector>
 
 #include "matrix.h"
+#include "rotation_matrix.h"
 #include "transformation_matrix.h"
 
 /*** Macro ***/
@@ -28,6 +29,28 @@ limitations under the License.
 /*** Global variable ***/
 
 /*** Function ***/
+Matrix TransformationMatrix::Expand3to4(const Matrix& mat3)
+{
+    Matrix mat4 = Matrix::Identity(4);
+    for (int32_t row = 0; row < 3; row++) {
+        for (int32_t col = 0; col < 3; col++) {
+            mat4(row, col) = mat3(row, col);
+        }
+    }
+    return mat4;
+}
+
+Matrix TransformationMatrix::Shrink4to3(const Matrix& mat4)
+{
+    Matrix mat3 = Matrix::Identity(3);
+    for (int32_t row = 0; row < 3; row++) {
+        for (int32_t col = 0; col < 3; col++) {
+            mat3(row, col) = mat4(row, col);
+        }
+    }
+    return mat3;
+}
+
 Matrix TransformationMatrix::Translate(float x, float y, float z)
 {
     Matrix mat = Matrix::Identity(4);
@@ -48,62 +71,26 @@ Matrix TransformationMatrix::Scale(float x, float y, float z)
 
 Matrix TransformationMatrix::RotateX(float rad)
 {
-    Matrix mat = Matrix::Identity(4);
-    mat[5] = std::cos(rad);
-    mat[6] = -std::sin(rad);
-    mat[9] = std::sin(rad);
-    mat[10] = std::cos(rad);
-    return mat;
+    Matrix mat = RotationMatrix::RotateX(rad);
+    return Expand3to4(mat);
 }
 
 Matrix TransformationMatrix::RotateY(float rad)
 {
-    Matrix mat = Matrix::Identity(4);
-    mat[0] = std::cos(rad);
-    mat[2] = std::sin(rad);
-    mat[8] = -std::sin(rad);
-    mat[10] = std::cos(rad);
-    return mat;
+    Matrix mat = RotationMatrix::RotateY(rad);
+    return Expand3to4(mat);
 }
 
 Matrix TransformationMatrix::RotateZ(float rad)
 {
-    Matrix mat = Matrix::Identity(4);
-    mat[0] = std::cos(rad);
-    mat[1] = -std::sin(rad);
-    mat[4] = std::sin(rad);
-    mat[5] = std::cos(rad);
-    return mat;
+    Matrix mat = RotationMatrix::RotateZ(rad);
+    return Expand3to4(mat);
 }
 
-Matrix TransformationMatrix::Rotate(float rad, float x, float y, float z)
+Matrix TransformationMatrix::RotateAxisAngle(float x, float y, float z, float rad)
 {
-    Matrix mat = Matrix::Identity(4);
-    const float d = std::sqrt(x * x + y * y + z * z);
-    if (d > 0.0f) {
-        const float l = x / d;
-        const float m = y / d;
-        const float n = z / d;
-        const float l2(l * l);
-        const float m2 = m * m;
-        const float n2 = n * n;
-        const float lm = l * m;
-        const float mn = m * n;
-        const float nl = n * l;
-        const float c = std::cos(rad);
-        const float s = std::sin(rad);
-        const float c1 = 1.0f - c;
-        mat[0] = (1.0f - l2) * c + l2;
-        mat[1] = lm * c1 - n * s;
-        mat[2] = nl * c1 + m * s;
-        mat[4] = lm * c1 + n * s;
-        mat[5] = (1.0f - m2) * c + m2;
-        mat[6] = mn * c1 - l * s;
-        mat[8] = nl * c1 - m * s;
-        mat[9] = mn * c1 + l * s;
-        mat[10] = (1.0f - n2) * c + n2;
-    }
-    return mat;
+    Matrix mat = RotationMatrix::ConvertAxisAngle2RotationMatrix(x, y, z, rad);
+    return Expand3to4(mat);
 }
 
 Matrix TransformationMatrix::LookAt(
