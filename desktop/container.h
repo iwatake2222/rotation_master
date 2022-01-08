@@ -28,21 +28,11 @@ limitations under the License.
 static constexpr double M_PI = 3.14159265358979323846;
 #endif
 
-enum class EULER_ORDER {
-    XYZ = 0,
-    XZY,
-    YXZ,
-    YZX,
-    ZXY,
-    ZYX,
-    NUM,
-};
-
 enum class REPRESENTATION_TYPE {
     ROTATION_MATRIX = 0,
-    QUATERNION,
+    ROTATION_VECTOR,
     AXIS_ANGLE,
-    AXIS_ANGLE_MAG,
+    QUATERNION,
     EULER_MOBILE,
     EULER_FIXED
 };
@@ -82,26 +72,29 @@ public:
 
 class InputContainer {
 public:
-    InputContainer() {
+    InputContainer() { Reset(); }
+    ~InputContainer() {}
+    void Reset()
+    {
         selected_representation_type = static_cast<int32_t>(REPRESENTATION_TYPE::ROTATION_MATRIX);
-        rotation_matrix = Matrix(3, 3);
-        quaternion = Matrix(1, 4);
+        rotation_matrix = Matrix::Identity(3);
+        rotation_vector = Matrix(1, 3);
         axis_angle = Matrix(1, 4);
-        axis_angle_mag = Matrix(1, 3);
+        quaternion = Matrix(1, 4);
+        quaternion[3] = 1.0;
         mobile_euler_order = 0;
         mobile_euler_angle = Matrix(1, 3);
         fixed_euler_order = 0;
         fixed_euler_angle = Matrix(1, 3);
     }
-    ~InputContainer() {}
 
 public:
     /* contain angle as radian */
     int32_t selected_representation_type;
     Matrix rotation_matrix;
-    Matrix quaternion;
+    Matrix rotation_vector;
     Matrix axis_angle;
-    Matrix axis_angle_mag;
+    Matrix quaternion;
     int32_t mobile_euler_order;
     Matrix mobile_euler_angle;
     int32_t fixed_euler_order;
@@ -110,24 +103,27 @@ public:
 
 class OutputContainer {
 public:
-    OutputContainer() {
-        rotation_matrix = Matrix(3, 3);
-        quaternion = Matrix(1, 4);
+    OutputContainer() { Reset(); }
+    ~OutputContainer() {}
+    void Reset()
+    {
+        rotation_matrix = Matrix::Identity(3);
+        rotation_vector = Matrix(1, 3);
         axis_angle = Matrix(1, 4);
-        axis_angle_mag = Matrix(1, 3);
-        for (int32_t i = 0; i < static_cast<int32_t>(EULER_ORDER::NUM); i++) {
+        quaternion = Matrix(1, 4);
+        quaternion[3] = 1.0;
+        for (int32_t i = 0; i < sizeof(mobile_euler_angle) / sizeof(Matrix); i++) {
             mobile_euler_angle[i] = Matrix(1, 3);
             fixed_euler_angle[i] = Matrix(1, 3);
         }
     }
-    ~OutputContainer() {}
 
 public:
     /* contain angle as radian */
     Matrix rotation_matrix;
-    Matrix quaternion;
+    Matrix rotation_vector;
     Matrix axis_angle;
-    Matrix axis_angle_mag;
+    Matrix quaternion;
     Matrix mobile_euler_angle[6];
     Matrix fixed_euler_angle[6];
 };

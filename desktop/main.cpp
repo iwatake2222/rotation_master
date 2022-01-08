@@ -33,7 +33,7 @@ limitations under the License.
 #include "container.h"
 #include "window.h"
 #include "ui.h"
-#include "converter.h"
+#include "rotation_matrix.h"
 
 /*** Macro ***/
 /* macro functions */
@@ -49,6 +49,57 @@ limitations under the License.
 
 
 /*** Function ***/
+static void ConvertAll(InputContainer& input_container, OutputContainer& output_container)
+{
+    /* First, Convert the selected input representation to rotatin matrix (mat3_rot) */
+    Matrix mat3_rot = Matrix::Identity(3);
+    switch (static_cast<REPRESENTATION_TYPE>(input_container.selected_representation_type)) {
+    case REPRESENTATION_TYPE::ROTATION_MATRIX:
+        for (int32_t i = 0; i < 9; i++) {
+            mat3_rot[i] = input_container.rotation_matrix[i];
+        }
+        break;
+    case REPRESENTATION_TYPE::ROTATION_VECTOR:
+        mat3_rot = RotationMatrix::ConvertRotationVector2RotationMatrix(input_container.rotation_vector[0], input_container.rotation_vector[1], input_container.rotation_vector[2]);
+        break;
+    case REPRESENTATION_TYPE::AXIS_ANGLE:
+        mat3_rot = RotationMatrix::ConvertAxisAngle2RotationMatrix(input_container.axis_angle[0], input_container.axis_angle[1], input_container.axis_angle[2], input_container.axis_angle[3]);
+        break;
+    case REPRESENTATION_TYPE::QUATERNION:
+        mat3_rot = RotationMatrix::ConvertQuaternion2RotationMatrix(input_container.quaternion[0], input_container.quaternion[1], input_container.quaternion[2], input_container.quaternion[3]);
+        break;
+    case REPRESENTATION_TYPE::EULER_MOBILE:
+        mat3_rot = RotationMatrix::ConvertEulerMobile2RotationMatrix(static_cast<RotationMatrix::EULER_ORDER>(input_container.mobile_euler_order), input_container.mobile_euler_angle[0], input_container.mobile_euler_angle[1], input_container.mobile_euler_angle[2]);
+        break;
+    case REPRESENTATION_TYPE::EULER_FIXED:
+        mat3_rot = RotationMatrix::ConvertEulerFixed2RotationMatrix(static_cast<RotationMatrix::EULER_ORDER>(input_container.fixed_euler_order), input_container.fixed_euler_angle[0], input_container.fixed_euler_angle[1], input_container.fixed_euler_angle[2]);
+        break;
+    }
+
+    /* Then, Convert the calculated rotation matrix (mat3_rot) to all the representations (output) */
+    for (int32_t i = 0; i < 9; i++) {
+        output_container.rotation_matrix[i] = mat3_rot[i];
+    }
+
+    // todo
+}
+
+static void OverwriteInput(InputContainer& input_container, OutputContainer& output_container)
+{
+    input_container.rotation_matrix = output_container.rotation_matrix;
+    input_container.quaternion = output_container.quaternion;
+    input_container.axis_angle = output_container.axis_angle;
+    input_container.rotation_vector = output_container.rotation_vector;
+    input_container.mobile_euler_angle = output_container.mobile_euler_angle[input_container.mobile_euler_order];
+    input_container.fixed_euler_angle = output_container.fixed_euler_angle[input_container.fixed_euler_order];
+}
+
+static void ResetValues(InputContainer& input_container, OutputContainer& output_container)
+{
+    input_container.Reset();
+    output_container.Reset();
+}
+
 int main(int argc, char *argv[])
 {
     /*** Initialize ***/
@@ -90,11 +141,10 @@ int main(int argc, char *argv[])
         axes->Draw(my_window.GetViewProjection(), Matrix::Identity(4));
         
         /* Draw monolith */
-        Matrix model = Matrix::Identity(4);
-        model = TransformationMatrix::RotateX(output_container.mobile_euler_angle[0](0, 0)) * TransformationMatrix::RotateY(output_container.mobile_euler_angle[0](0, 1)) * TransformationMatrix::RotateZ(output_container.mobile_euler_angle[0](0, 2));
-        object->Draw(my_window.GetViewProjection(), model);
+        Matrix model_pose = TransformationMatrix::Expand3to4(output_container.rotation_matrix);
+        object->Draw(my_window.GetViewProjection(), model_pose);
         Shape::SetLineWidth(10.0f);
-        object_axes->Draw(my_window.GetViewProjection(), model);
+        object_axes->Draw(my_window.GetViewProjection(), model_pose);
 
         /* Draw UI */
         my_ui.Update(my_window, angle_unit, input_container, output_container, setting_container);
@@ -104,12 +154,12 @@ int main(int argc, char *argv[])
         }
 
         /* Convert representations of rotation */
-        Converter::Convert(input_container, output_container);
+        ConvertAll(input_container, output_container);
         if (setting_container.is_update_input_pressed) {
-            Converter::UpdateInput(input_container, output_container);
+            OverwriteInput(input_container, output_container);
         }
         if (setting_container.is_reset_value_pressed) {
-            Converter::ResetValue(input_container, output_container);
+            ResetValues(input_container, output_container);
         }
 
         /* Update display */

@@ -13,7 +13,6 @@ add_executable(${ProjectName}
     main.cpp
     container.h
     ui.h ui.cpp
-    converter.h converter.cpp
 )
 
 ## Add third party libraries
@@ -56,8 +55,6 @@ target_link_libraries(${ProjectName} ImGui)
 ## Add my submodules
 add_subdirectory(./matrix)
 target_link_libraries(${ProjectName} Matrix)
-add_subdirectory(./projection_matrix)
-target_link_libraries(${ProjectName} ProjectionMatrix)
 add_subdirectory(./transformation_matrix)
 target_link_libraries(${ProjectName} TransformationMatrix)
 add_subdirectory(./gl_helper)

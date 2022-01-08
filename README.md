@@ -8,9 +8,9 @@
 # Rotation Master
 - Provide conversion between the following representations of 3D rotation and display the pose
     - Rotation Matrix
-    - Quaternion
+    - Rotation Vector
     - Axis-angle
-    - Axis with angle magnitude
+    - Quaternion
     - Euler Angle (Intrinsic(Mobile))
     - Euler Angle (Extrinsic(Fixed))
 

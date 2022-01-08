@@ -5,6 +5,8 @@ set(LibraryName TransformationMatrix)
 # Create library
 add_library(${LibraryName}
     transformation_matrix.h transformation_matrix.cpp
+    rotation_matrix.h rotation_matrix.cpp
+    projection_matrix.h projection_matrix.cpp
 )
 
 target_link_libraries(${LibraryName} Matrix)
