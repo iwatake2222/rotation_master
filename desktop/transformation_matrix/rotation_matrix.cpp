@@ -185,6 +185,37 @@ Matrix RotationMatrix::ConvertEulerFixed2RotationMatrix(RotationMatrix::EULER_OR
     return mat3_rot;
 }
 
+
+Matrix RotationMatrix::ConvertRotationMatrix2RotationVector(const Matrix& mat3_rot)
+{
+    Matrix vec3 = Matrix(3, 1);
+    return vec3;
+}
+
+Matrix RotationMatrix::ConvertRotationMatrix2AxisAngle(const Matrix& mat3_rot)
+{
+    Matrix vec4 = Matrix(4, 1);
+    return vec4;
+}
+
+Matrix RotationMatrix::ConvertRotationMatrix2Quaternion(const Matrix& mat3_rot)
+{
+    Matrix vec4 = Matrix(4, 1);
+    return vec4;
+}
+
+Matrix RotationMatrix::ConvertRotationMatrix2EulerMobile(RotationMatrix::EULER_ORDER order, const Matrix& mat3_rot)
+{
+    Matrix vec3 = Matrix(3, 1);
+    return vec3;
+}
+Matrix RotationMatrix::ConvertRotationMatrix2EulerFixed(RotationMatrix::EULER_ORDER order, const Matrix& mat3_rot)
+{
+    Matrix vec3 = Matrix(3, 1);
+    return vec3;
+}
+
+
 /* Note: xyz is not on OpenGL coordinate */
 Matrix RotationMatrix::ConvertXYZ2PolarCoordinate(float x, float y, float z)
 {

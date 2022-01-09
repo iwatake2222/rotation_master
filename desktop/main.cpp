@@ -81,12 +81,17 @@ static void ConvertAll(InputContainer& input_container, OutputContainer& output_
         break;
     }
 
-    /* Then, Convert the calculated rotation matrix (mat3_rot) to all the representations (output) */
+    /* Then, Convert the calculated rotation matrix (mat3_rot) to all the other representations (output) */
     for (int32_t i = 0; i < 9; i++) {
         output_container.rotation_matrix[i] = mat3_rot[i];
     }
-
-    // todo
+    output_container.rotation_vector = RotationMatrix::ConvertRotationMatrix2RotationVector(mat3_rot);
+    output_container.axis_angle = RotationMatrix::ConvertRotationMatrix2AxisAngle(mat3_rot);
+    output_container.quaternion = RotationMatrix::ConvertRotationMatrix2Quaternion(mat3_rot);
+    for (int32_t i = 0; i < static_cast<int32_t>(sizeof(output_container.mobile_euler_angle) / sizeof(Matrix)); i++) {
+        output_container.mobile_euler_angle[i] = RotationMatrix::ConvertRotationMatrix2EulerMobile(static_cast<RotationMatrix::EULER_ORDER>(i), mat3_rot);
+        output_container.fixed_euler_angle[i] = RotationMatrix::ConvertRotationMatrix2EulerMobile(static_cast<RotationMatrix::EULER_ORDER>(i), mat3_rot);
+    }
 }
 
 static void OverwriteInput(InputContainer& input_container, OutputContainer& output_container)

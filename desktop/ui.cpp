@@ -104,14 +104,14 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::RadioButton("Rotation Vector", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::ROTATION_VECTOR));
         if (ImGui::BeginTable("Rotation Vector", 3)) {
             bool is_value_changed = false;
-            float val[3] = { angle_unit.Display(input_container.rotation_vector(0, 0)), angle_unit.Display(input_container.rotation_vector(0, 1)), angle_unit.Display(input_container.rotation_vector(0, 2)) };
+            float val[3] = { angle_unit.Display(input_container.rotation_vector[0]), angle_unit.Display(input_container.rotation_vector[1]), angle_unit.Display(input_container.rotation_vector[2]) };
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##x", &val[0], angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("x: ") + angle_unit.GetAngleFormat()).c_str());
             ImGui::TableSetColumnIndex(1); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##y", &val[1], angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("y: ") + angle_unit.GetAngleFormat()).c_str());
             ImGui::TableSetColumnIndex(2); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##z", &val[2], angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("z: ") + angle_unit.GetAngleFormat()).c_str());
             ImGui::EndTable();
             for (int32_t i = 0; i < 3; i++) {
-                input_container.rotation_vector(0, i) = angle_unit.StoreAngle(val[i]);  /* (rad or deg) to rad */
+                input_container.rotation_vector[i] = angle_unit.StoreAngle(val[i]);  /* (rad or deg) to rad */
             }
             if (is_value_changed) input_container.selected_representation_type = static_cast<int32_t>(REPRESENTATION_TYPE::ROTATION_VECTOR);
 
@@ -122,12 +122,12 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         if (ImGui::BeginTable("Axis-angle", 4)) {
             bool is_value_changed = false;
             ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##x", &input_container.axis_angle(0, 0), 0.005f, -1.0, 1.0f, "x: %.3f");
-            ImGui::TableSetColumnIndex(1); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##y", &input_container.axis_angle(0, 1), 0.005f, -1.0, 1.0f, "y: %.3f");
-            ImGui::TableSetColumnIndex(2); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##z", &input_container.axis_angle(0, 2), 0.005f, -1.0, 1.0f, "z: %.3f");
-            float val = angle_unit.Display(input_container.axis_angle(0, 3));
+            ImGui::TableSetColumnIndex(0); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##x", &input_container.axis_angle[0], 0.005f, -1.0, 1.0f, "x: %.3f");
+            ImGui::TableSetColumnIndex(1); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##y", &input_container.axis_angle[1], 0.005f, -1.0, 1.0f, "y: %.3f");
+            ImGui::TableSetColumnIndex(2); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##z", &input_container.axis_angle[2], 0.005f, -1.0, 1.0f, "z: %.3f");
+            float val = angle_unit.Display(input_container.axis_angle[3]);
             ImGui::TableSetColumnIndex(3); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##angle", &val, angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("angle: ") + angle_unit.GetAngleFormat()).c_str());
-            input_container.axis_angle(0, 3) = angle_unit.StoreAngle(val);  /* (rad or deg) to rad */
+            input_container.axis_angle[3] = angle_unit.StoreAngle(val);  /* (rad or deg) to rad */
             ImGui::EndTable();
             if (is_value_changed) input_container.selected_representation_type = static_cast<int32_t>(REPRESENTATION_TYPE::AXIS_ANGLE);
         }
@@ -137,10 +137,10 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         if (ImGui::BeginTable("Quaternion", 4)) {
             bool is_value_changed = false;
             ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##x", &input_container.quaternion(0, 0), 0.005f, -1.0, 1.0f, "x: %.3f");
-            ImGui::TableSetColumnIndex(1); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##y", &input_container.quaternion(0, 1), 0.005f, -1.0, 1.0f, "y: %.3f");
-            ImGui::TableSetColumnIndex(2); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##z", &input_container.quaternion(0, 2), 0.005f, -1.0, 1.0f, "z: %.3f");
-            ImGui::TableSetColumnIndex(3); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##w", &input_container.quaternion(0, 3), 0.005f, -1.0, 1.0f, "w: %.3f");
+            ImGui::TableSetColumnIndex(0); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##x", &input_container.quaternion[0], 0.005f, -1.0, 1.0f, "x: %.3f");
+            ImGui::TableSetColumnIndex(1); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##y", &input_container.quaternion[1], 0.005f, -1.0, 1.0f, "y: %.3f");
+            ImGui::TableSetColumnIndex(2); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##z", &input_container.quaternion[2], 0.005f, -1.0, 1.0f, "z: %.3f");
+            ImGui::TableSetColumnIndex(3); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##w", &input_container.quaternion[3], 0.005f, -1.0, 1.0f, "w: %.3f");
             ImGui::EndTable();
             if (is_value_changed) input_container.selected_representation_type = static_cast<int32_t>(REPRESENTATION_TYPE::QUATERNION);
         }
@@ -149,7 +149,7 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::RadioButton("Intrinsic (Mobile) Euler Angle", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_MOBILE));
         if (ImGui::BeginTable("Intrinsic (Mobile) Euler Angle", 4)) {
             bool is_value_changed = false;
-            float val[3] = { angle_unit.Display(input_container.mobile_euler_angle(0, 0)), angle_unit.Display(input_container.mobile_euler_angle(0, 1)), angle_unit.Display(input_container.mobile_euler_angle(0, 2)) };
+            float val[3] = { angle_unit.Display(input_container.mobile_euler_angle[0]), angle_unit.Display(input_container.mobile_euler_angle[1]), angle_unit.Display(input_container.mobile_euler_angle[2]) };
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::Combo("#combo", &input_container.mobile_euler_order, EULER_ORDER_STR, IM_ARRAYSIZE(EULER_ORDER_STR));
             ImGui::TableSetColumnIndex(1); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##x", &val[0], angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("x: ") + angle_unit.GetAngleFormat()).c_str());
@@ -157,7 +157,7 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
             ImGui::TableSetColumnIndex(3); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##z", &val[2], angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("z: ") + angle_unit.GetAngleFormat()).c_str());
             ImGui::EndTable();
             for (int32_t i = 0; i < 3; i++) {
-                input_container.mobile_euler_angle(0, i) = angle_unit.StoreAngle(val[i]);  /* (rad or deg) to rad */
+                input_container.mobile_euler_angle[i] = angle_unit.StoreAngle(val[i]);  /* (rad or deg) to rad */
             }
             if (is_value_changed) input_container.selected_representation_type = static_cast<int32_t>(REPRESENTATION_TYPE::EULER_MOBILE);
         }
@@ -166,7 +166,7 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::RadioButton("Extrinsic (Fixed) Euler Angle", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_FIXED));
         if (ImGui::BeginTable("Extrinsic (Fixed) Euler Angle", 4)) {
             bool is_value_changed = false;
-            float val[3] = { angle_unit.Display(input_container.fixed_euler_angle(0, 0)), angle_unit.Display(input_container.fixed_euler_angle(0, 1)), angle_unit.Display(input_container.fixed_euler_angle(0, 2)) };
+            float val[3] = { angle_unit.Display(input_container.fixed_euler_angle[0]), angle_unit.Display(input_container.fixed_euler_angle[1]), angle_unit.Display(input_container.fixed_euler_angle[2]) };
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::Combo("#combo", &input_container.fixed_euler_order, EULER_ORDER_STR, IM_ARRAYSIZE(EULER_ORDER_STR));
             ImGui::TableSetColumnIndex(1); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##x", &val[0], angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("x: ") + angle_unit.GetAngleFormat()).c_str());
@@ -174,7 +174,7 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
             ImGui::TableSetColumnIndex(3); ImGui::PushItemWidth(-FLT_MIN); is_value_changed |= ImGui::DragFloat("##z", &val[2], angle_unit.GetAngleDragSpeed(), -angle_unit.GetAngleRange(), angle_unit.GetAngleRange(), (std::string("z: ") + angle_unit.GetAngleFormat()).c_str());
             ImGui::EndTable();
             for (int32_t i = 0; i < 3; i++) {
-                input_container.fixed_euler_angle(0, i) = angle_unit.StoreAngle(val[i]);  /* (rad or deg) to rad */
+                input_container.fixed_euler_angle[i] = angle_unit.StoreAngle(val[i]);  /* (rad or deg) to rad */
             }
             if (is_value_changed) input_container.selected_representation_type = static_cast<int32_t>(REPRESENTATION_TYPE::EULER_FIXED);
         }
@@ -200,9 +200,9 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::Text("Rotation Vector");
         if (ImGui::BeginTable("Rotation Vector", 3)) {
             ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text((std::string("  x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.rotation_vector(0, 0)));
-            ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("y: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.rotation_vector(0, 1)));
-            ImGui::TableSetColumnIndex(2); ImGui::Text((std::string("z: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.rotation_vector(0, 2)));
+            ImGui::TableSetColumnIndex(0); ImGui::Text((std::string("  x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.rotation_vector[0]));
+            ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("y: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.rotation_vector[1]));
+            ImGui::TableSetColumnIndex(2); ImGui::Text((std::string("z: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.rotation_vector[2]));
             ImGui::EndTable();
         }
         ImGui::Separator();
@@ -210,10 +210,10 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::Text("Axis-angle");
         if (ImGui::BeginTable("Axis-angle", 4)) {
             ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text("  x: %.3f", output_container.axis_angle(0, 0));
-            ImGui::TableSetColumnIndex(1); ImGui::Text("y: %.3f", output_container.axis_angle(0, 1));
-            ImGui::TableSetColumnIndex(2); ImGui::Text("z: %.3f", output_container.axis_angle(0, 2));
-            ImGui::TableSetColumnIndex(3); ImGui::Text((std::string("angle: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.axis_angle(0, 3)));
+            ImGui::TableSetColumnIndex(0); ImGui::Text("  x: %.3f", output_container.axis_angle[0]);
+            ImGui::TableSetColumnIndex(1); ImGui::Text("y: %.3f", output_container.axis_angle[1]);
+            ImGui::TableSetColumnIndex(2); ImGui::Text("z: %.3f", output_container.axis_angle[2]);
+            ImGui::TableSetColumnIndex(3); ImGui::Text((std::string("angle: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.axis_angle[3]));
             ImGui::EndTable();
         }
         ImGui::Separator();
@@ -221,10 +221,10 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::Text("Quaternion");
         if (ImGui::BeginTable("Quaternion", 4)) {
             ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text("  x: %.3f", output_container.quaternion(0, 0));
-            ImGui::TableSetColumnIndex(1); ImGui::Text("y: %.3f", output_container.quaternion(0, 1));
-            ImGui::TableSetColumnIndex(2); ImGui::Text("z: %.3f", output_container.quaternion(0, 2));
-            ImGui::TableSetColumnIndex(3); ImGui::Text("w: %.3f", output_container.quaternion(0, 3));
+            ImGui::TableSetColumnIndex(0); ImGui::Text("  x: %.3f", output_container.quaternion[0]);
+            ImGui::TableSetColumnIndex(1); ImGui::Text("y: %.3f", output_container.quaternion[1]);
+            ImGui::TableSetColumnIndex(2); ImGui::Text("z: %.3f", output_container.quaternion[2]);
+            ImGui::TableSetColumnIndex(3); ImGui::Text("w: %.3f", output_container.quaternion[3]);
             ImGui::EndTable();
         }
         ImGui::Separator();
@@ -234,9 +234,9 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
             for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
-                ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.mobile_euler_angle[i](0, 0)));
-                ImGui::TableSetColumnIndex(2); ImGui::Text((std::string("y: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.mobile_euler_angle[i](0, 1)));
-                ImGui::TableSetColumnIndex(3); ImGui::Text((std::string("z: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.mobile_euler_angle[i](0, 2)));
+                ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.mobile_euler_angle[i][0]));
+                ImGui::TableSetColumnIndex(2); ImGui::Text((std::string("y: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.mobile_euler_angle[i][1]));
+                ImGui::TableSetColumnIndex(3); ImGui::Text((std::string("z: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.mobile_euler_angle[i][2]));
 
             }
             ImGui::EndTable();
@@ -248,9 +248,9 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
             for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
-                ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.fixed_euler_angle[i](0, 0)));
-                ImGui::TableSetColumnIndex(2); ImGui::Text((std::string("y: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.fixed_euler_angle[i](0, 1)));
-                ImGui::TableSetColumnIndex(3); ImGui::Text((std::string("z: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.fixed_euler_angle[i](0, 2)));
+                ImGui::TableSetColumnIndex(1); ImGui::Text((std::string("x: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.fixed_euler_angle[i][0]));
+                ImGui::TableSetColumnIndex(2); ImGui::Text((std::string("y: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.fixed_euler_angle[i][1]));
+                ImGui::TableSetColumnIndex(3); ImGui::Text((std::string("z: ") + angle_unit.GetAngleFormat()).c_str(), angle_unit.Display(output_container.fixed_euler_angle[i][2]));
 
             }
             ImGui::EndTable();
