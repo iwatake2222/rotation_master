@@ -63,13 +63,15 @@ Matrix ProjectionMatrix::Frustum(float left, float right, float bottom, float to
     }
     return mat;
 }
-Matrix ProjectionMatrix::Perspective(float fovy, float aspect, float z_near, float z_far)
+Matrix ProjectionMatrix::Perspective(float cx, float cy, float fovy, float aspect, float z_near, float z_far)
 {
     Matrix mat = Matrix::Identity(4);
     const float dz = z_far - z_near;
     if (dz != 0.0f) {
         mat[5] = 1.0f / std::tan(fovy * 0.5f);
         mat[0] = mat[5] / aspect;
+        mat[2] = cx;
+        mat[6] = cy;
         mat[10] = -(z_far + z_near) / dz;
         mat[11] = -2.0f * z_far * z_near / dz;
         mat[14] = -1.0f;

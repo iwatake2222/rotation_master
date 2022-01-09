@@ -42,6 +42,10 @@ namespace RotationMatrix
     Matrix ConvertQuaternion2RotationMatrix(float x, float y, float z, float w);
     Matrix ConvertEulerMobile2RotationMatrix(RotationMatrix::EULER_ORDER order, float x, float y, float z);
     Matrix ConvertEulerFixed2RotationMatrix(RotationMatrix::EULER_ORDER order, float x, float y, float z);
+
+    /* Otehr functions */
+    Matrix ConvertXYZ2PolarCoordinate(float x, float y, float z);   /* return 3 x 1 vector */
+    Matrix ConvertPolarCoordinate2XYZ(float r, float theta_rad, float phi_rad);  /* return 3 x 1 vector */
 };
 
 #endif

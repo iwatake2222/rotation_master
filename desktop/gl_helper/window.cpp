@@ -29,6 +29,7 @@ limitations under the License.
 #include "matrix.h"
 #include "transformation_matrix.h"
 #include "projection_matrix.h"
+#include "rotation_matrix.h"
 
 #include "window.h"
 
@@ -97,13 +98,18 @@ void Window::SetIsDarkMode(bool is_darkmode)
     m_is_darkmode = is_darkmode;
 }
 
-Matrix Window::GetViewProjection(float fovy, float z_near, float z_far)
+void Window::SetIsGoAround(bool is_go_around)
+{
+    m_is_go_around = is_go_around;
+}
+
+Matrix Window::GetViewProjection(float cx, float cy, float fovy, float z_near, float z_far)
 {
     Matrix view = Matrix::Identity(4);
     view = TransformationMatrix::Translate(-m_camera_pos[0], -m_camera_pos[1], -m_camera_pos[2]) * view;  /* move to origin */
     view = TransformationMatrix::RotateX(m_camera_angle[0]) * TransformationMatrix::RotateY(m_camera_angle[1]) * TransformationMatrix::RotateZ(m_camera_angle[2]) * view; /* rotate*/
     const float aspect = static_cast<float>(m_width) / m_height;
-    const Matrix projection = ProjectionMatrix::Perspective(fovy, aspect, z_near, z_far);
+    const Matrix projection = ProjectionMatrix::Perspective(cx, cy, fovy, aspect, z_near, z_far);
     return projection * view;
 }
 
@@ -211,9 +217,25 @@ bool Window::FrameStart()
     m_last_mouse_y = mouse_y;
 
     if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_2) != GLFW_RELEASE) {
-        m_camera_angle[1] += mouse_move_x * MOUSE_ROT_SPEED;
-        m_camera_angle[0] += mouse_move_y * MOUSE_ROT_SPEED;
-        
+        if (!m_is_go_around) {
+            m_camera_angle[1] += mouse_move_x * MOUSE_ROT_SPEED;
+            m_camera_angle[0] += mouse_move_y * MOUSE_ROT_SPEED;
+        } else{
+            /* move in polar coordinate, then look at the origin */
+            /* note: the xyz order in polar coordinate is different from that of OpenGL */
+            Matrix vec3_polar = RotationMatrix::ConvertXYZ2PolarCoordinate(m_camera_pos[2], m_camera_pos[0], m_camera_pos[1]);
+            vec3_polar[2] -= mouse_move_x * MOUSE_MOV_SPEED;
+            vec3_polar[1] -= mouse_move_y * MOUSE_MOV_SPEED;
+            Matrix vec3_zxy = RotationMatrix::ConvertPolarCoordinate2XYZ(vec3_polar[0], vec3_polar[1], vec3_polar[2]);
+            m_camera_pos[0] = vec3_zxy[1];
+            m_camera_pos[1] = vec3_zxy[2];
+            m_camera_pos[2] = vec3_zxy[0];
+            if (m_camera_pos[2] < 0) {
+                /* todo: it doesn't work well when Z < 0*/
+                m_camera_pos[2] = 0.000001f;
+            }
+            LookAt({ m_camera_pos[0], m_camera_pos[1], m_camera_pos[2] }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
+        }
     }
     if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_3) != GLFW_RELEASE) {
         //m_camera_pos[0] -= mouse_move_x * MOUSE_MOV_SPEED;
@@ -242,7 +264,7 @@ bool Window::FrameStart()
     if (m_is_darkmode) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f); 
     } else {
-        glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+        glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -265,3 +287,4 @@ void Window::MoveCameraPosFromCameraCoordinate(float dx, float dy, float dz)
     m_camera_pos[1] += pos_in_world(1, 3);  // ty in world coordinate
     m_camera_pos[2] += pos_in_world(2, 3);  // tz in world coordinate
 }
+

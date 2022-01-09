@@ -261,9 +261,9 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
     
     float width_window_setting = 0.0f;
     {
-        ImGui::SetNextWindowPos(ImVec2(width_window_conversion, 0), ImGuiCond_Once);
-        ImGui::SetNextWindowSize(ImVec2(400.0f, 150.0f), ImGuiCond_Once);
-        ImGui::Begin("Settings", nullptr);
+        ImGui::SetNextWindowPos(ImVec2(width_window_conversion, 0));
+        //ImGui::SetNextWindowSize(ImVec2(400.0f, 150.0f), ImGuiCond_Once);
+        ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
         /*** Settings ***/
         int32_t dark_mode = setting_container.is_dark_mode ? 1 : 0;
@@ -283,11 +283,11 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         int32_t radio_degree = angle_unit.is_degree ? 1 : 0;
         ImGui::Text("Unit:"); ImGui::SameLine();
         ImGui::RadioButton("Radians", &radio_degree, 0); ImGui::SameLine();
-        ImGui::RadioButton("Degrees", &radio_degree, 1); ImGui::SameLine();
+        ImGui::RadioButton("Degrees", &radio_degree, 1);
         angle_unit.is_degree = (radio_degree == 1);
 
         int32_t go_around = setting_container.is_go_around ? 1 : 0;
-        ImGui::Text("  /  Move:"); ImGui::SameLine();
+        ImGui::Text("Move:"); ImGui::SameLine();
         ImGui::RadioButton("GoAround", &go_around, 1); ImGui::SameLine();
         ImGui::RadioButton("Free", &go_around, 0);
         setting_container.is_go_around = (go_around == 1);
@@ -306,7 +306,7 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
     
 
     {
-        ImGui::SetNextWindowPos(ImVec2(width_window_conversion + width_window_setting, 0), ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(width_window_conversion + width_window_setting, 0));
         ImGui::Begin("How to use", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
         ImGui::Text(
