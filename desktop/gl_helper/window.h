@@ -35,20 +35,20 @@ private:
     static void CbWheel(GLFWwindow* window, double x, double y);
     static void CbKeyboard(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
 public:
-    Window(int32_t width = 1440, int32_t height = 870, const char* title = "Rotation Master");
+    Window(int32_t width = 1280, int32_t height = 870, const char* title = "Rotation Master");
     ~Window();
     void LookAt(const std::array<float, 3>& eye, const std::array<float, 3>& gaze, const std::array<float, 3>& up);
     bool FrameStart();
     void SwapBuffers();
-    Matrix GetViewProjection(float fovy = 1.0f, float z_near = 0.1f, float z_far = 1000.0f);
+    Matrix GetViewProjection(float cx = 0.0f, float cy = 0.0f, float fovy = 1.0f, float z_near = 0.1f, float z_far = 1000.0f);
     GLFWwindow* GetWindow();
     void SetIsDarkMode(bool);
+    void SetIsGoAround(bool);
     int32_t GetWidth();
     int32_t GetHeight();
 
 private:
     void MoveCameraPosFromCameraCoordinate(float dx, float dy, float dz);
-
 
 private:
     GLFWwindow* m_window;
@@ -62,6 +62,7 @@ private:
     double m_last_mouse_y;
 
     bool m_is_darkmode;
+    bool m_is_go_around;
 };
 
 

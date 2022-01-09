@@ -26,7 +26,7 @@ namespace ProjectionMatrix {
     /* All functions return 4x4 projection matrix*/
     Matrix Orthogonal(float left, float right, float bottom, float top, float z_near, float z_far);
     Matrix Frustum(float left, float right, float bottom, float top, float z_near, float z_far);
-    Matrix Perspective(float fovy, float aspect, float z_near, float z_far);
+    Matrix Perspective(float cx, float cy, float fovy, float aspect, float z_near, float z_far);
 }
 
 #endif

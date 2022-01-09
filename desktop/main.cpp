@@ -44,9 +44,11 @@ limitations under the License.
   }
 
 /* Setting */
+static constexpr float PROJECTION_OFFSET_CX = -0.2f; /* add offset for cx because we have UI bar on the left side */
+static constexpr float PROJECTION_OFFSET_CY = 0.2f; /* add offset for cx because we have UI bar on the left side */
+
 
 /*** Global variable ***/
-
 
 /*** Function ***/
 static void ConvertAll(InputContainer& input_container, OutputContainer& output_container)
@@ -109,7 +111,7 @@ int main(int argc, char *argv[])
 
     /* Initialize window class */
     Window my_window;
-    my_window.LookAt({ 2.0f, 2.0f, 3.0f }, { -0.5f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
+    my_window.LookAt({ 2.0f, 2.0f, 3.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
 
     /* Initialize ImGui */
     Ui my_ui(my_window);
@@ -130,27 +132,25 @@ int main(int argc, char *argv[])
     while(1) {
         if (my_window.FrameStart() == false) break;
 
-        my_window.SetIsDarkMode(setting_container.is_dark_mode);
-
         /* Draw bases */
         if (setting_container.is_draw_ground) {
             Shape::SetLineWidth(0.5f);
-            ground->Draw(my_window.GetViewProjection(), TransformationMatrix::Translate(0.0f, -1.0f, 0.0f));
+            ground->Draw(my_window.GetViewProjection(PROJECTION_OFFSET_CX, PROJECTION_OFFSET_CY), TransformationMatrix::Translate(0.0f, -1.0f, 0.0f));
         }
         Shape::SetLineWidth(2.0f);
-        axes->Draw(my_window.GetViewProjection(), Matrix::Identity(4));
+        axes->Draw(my_window.GetViewProjection(PROJECTION_OFFSET_CX, PROJECTION_OFFSET_CY), Matrix::Identity(4));
         
         /* Draw monolith */
         Matrix model_pose = TransformationMatrix::Expand3to4(output_container.rotation_matrix);
-        object->Draw(my_window.GetViewProjection(), model_pose);
+        object->Draw(my_window.GetViewProjection(PROJECTION_OFFSET_CX, PROJECTION_OFFSET_CY), model_pose);
         Shape::SetLineWidth(10.0f);
-        object_axes->Draw(my_window.GetViewProjection(), model_pose);
+        object_axes->Draw(my_window.GetViewProjection(PROJECTION_OFFSET_CX, PROJECTION_OFFSET_CY), model_pose);
 
         /* Draw UI */
         my_ui.Update(my_window, angle_unit, input_container, output_container, setting_container);
 
         if (setting_container.is_reset_view_pressed) {
-            my_window.LookAt({ 2.0f, 2.0f, 3.0f }, { -0.5f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
+            my_window.LookAt({ 2.0f, 2.0f, 3.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
         }
 
         /* Convert representations of rotation */
@@ -161,6 +161,9 @@ int main(int argc, char *argv[])
         if (setting_container.is_reset_value_pressed) {
             ResetValues(input_container, output_container);
         }
+
+        my_window.SetIsDarkMode(setting_container.is_dark_mode);
+        my_window.SetIsGoAround(setting_container.is_go_around);
 
         /* Update display */
         my_window.SwapBuffers();

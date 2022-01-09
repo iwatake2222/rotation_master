@@ -66,7 +66,7 @@ TEST_F(TestProjectionMatrix, Create)
     );
 
     EXPECT_NO_THROW(
-        Matrix mat = ProjectionMatrix::Perspective(1.0f, 1920.0f / 1080.0f, 0.1f, 1000.0f);
+        Matrix mat = ProjectionMatrix::Perspective(0.0f, 0.0f, 1.0f, 1920.0f / 1080.0f, 0.1f, 1000.0f);
     );
 }
 

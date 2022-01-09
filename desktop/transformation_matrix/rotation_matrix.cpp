@@ -180,3 +180,31 @@ Matrix RotationMatrix::ConvertEulerFixed2RotationMatrix(RotationMatrix::EULER_OR
     return mat3_rot;
 }
 
+/* Note: xyz is not on OpenGL coordinate */
+Matrix RotationMatrix::ConvertXYZ2PolarCoordinate(float x, float y, float z)
+{
+    Matrix vec3 = Matrix(3, 1);
+    float r = std::sqrt(x * x + y * y + z * z);
+    float theta_rad = 0;
+    if (r != 0) theta_rad = std::acos(z / r);
+    float phi_rad = 0;
+    phi_rad = std::acos(x / std::sqrt(x * x + y * y));
+    if (y < 0) phi_rad *= -1;
+    vec3[0] = r;
+    vec3[1] = theta_rad;
+    vec3[2] = phi_rad;
+    return vec3;
+}
+
+/* Note: xyz is not on OpenGL coordinate */
+Matrix RotationMatrix::ConvertPolarCoordinate2XYZ(float r, float theta_rad, float phi_rad)
+{
+    Matrix vec3 = Matrix(3, 1);
+    float x = r * std::sin(theta_rad) * std::cos(phi_rad);
+    float y = r * std::sin(theta_rad) * std::sin(phi_rad);
+    float z = r * std::cos(theta_rad);
+    vec3[0] = x;
+    vec3[1] = y;
+    vec3[2] = z;
+    return vec3;
+}
