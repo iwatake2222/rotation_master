@@ -35,7 +35,7 @@ private:
     static void CbWheel(GLFWwindow* window, double x, double y);
     static void CbKeyboard(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
 public:
-    Window(int32_t width = 1440, int32_t height = 1080, const char* title = "Rotation Master");
+    Window(int32_t width = 1440, int32_t height = 870, const char* title = "Rotation Master");
     ~Window();
     void LookAt(const std::array<float, 3>& eye, const std::array<float, 3>& gaze, const std::array<float, 3>& up);
     bool FrameStart();

@@ -27,7 +27,7 @@ namespace TransformationMatrix
 {
     Matrix Shrink4to3(const Matrix& mat4);
 
-    /* All functions return 3x3 rotation matrix*/
+    /* All functions return 4x4 transform matrix*/
     Matrix Expand3to4(const Matrix& mat3);
     Matrix Translate(float x, float y, float z);
     Matrix Scale(float x, float y, float z);
