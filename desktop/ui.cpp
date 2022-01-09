@@ -298,7 +298,16 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::SetNextWindowPos(ImVec2(width_window_conversion + width_window_setting, 0), ImGuiCond_Once);
         ImGui::Begin("How to use", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-        ImGui::Text("Drag to change value, or Ctrl + Click to enter value");
+        ImGui::Text(
+            "Rotation values input:\n"
+            "  Mouse button drag on the input area: change value\n"
+            "  Ctrl + mouse button click on the input area: enter value\n"
+            "  Mouse button click on a radio button: select representation\n"
+            "View:\n"
+            "  Right mouse button drag: rotate camera\n"
+            "  Middle mouse button drag: move camera (Free mode only)\n"
+            "  Scroll mouse wheel: move forward/backward camera\n"
+        );
 
         ImGui::End();
     }
