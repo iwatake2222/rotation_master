@@ -37,6 +37,7 @@ namespace RotationMatrix
     Matrix RotateX(float rad);
     Matrix RotateY(float rad);
     Matrix RotateZ(float rad);
+    Matrix NormalizeRotationMatrix(const Matrix mat3_rot);
     Matrix ConvertRotationVector2RotationMatrix(float x_rad, float y_rad, float z_rad);
     Matrix ConvertAxisAngle2RotationMatrix(float x, float y, float z, float rad);
     Matrix ConvertQuaternion2RotationMatrix(float x, float y, float z, float w);

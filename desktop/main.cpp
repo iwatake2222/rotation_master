@@ -51,7 +51,7 @@ static constexpr float PROJECTION_OFFSET_CY = 0.2f; /* add offset for cx because
 /*** Global variable ***/
 
 /*** Function ***/
-static void ConvertAll(InputContainer& input_container, OutputContainer& output_container)
+static void ConvertAll(InputContainer& input_container, OutputContainer& output_container, bool is_normalize_rotation_matrix)
 {
     /* First, Convert the selected input representation to rotatin matrix (mat3_rot) */
     Matrix mat3_rot = Matrix::Identity(3);
@@ -59,6 +59,9 @@ static void ConvertAll(InputContainer& input_container, OutputContainer& output_
     case REPRESENTATION_TYPE::ROTATION_MATRIX:
         for (int32_t i = 0; i < 9; i++) {
             mat3_rot[i] = input_container.rotation_matrix[i];
+        }
+        if (is_normalize_rotation_matrix) {
+            mat3_rot = RotationMatrix::NormalizeRotationMatrix(mat3_rot);
         }
         break;
     case REPRESENTATION_TYPE::ROTATION_VECTOR:
@@ -154,7 +157,7 @@ int main(int argc, char *argv[])
         }
 
         /* Convert representations of rotation */
-        ConvertAll(input_container, output_container);
+        ConvertAll(input_container, output_container, setting_container.is_normalize_rotation_matrix);
         if (setting_container.is_update_input_pressed) {
             OverwriteInput(input_container, output_container);
         }

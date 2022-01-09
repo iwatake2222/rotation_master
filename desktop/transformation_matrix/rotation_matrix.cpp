@@ -58,6 +58,11 @@ Matrix RotationMatrix::RotateZ(float rad)
     return mat3_rot;
 }
 
+Matrix RotationMatrix::NormalizeRotationMatrix(const Matrix mat3_rot)
+{
+    return mat3_rot;
+}
+
 Matrix RotationMatrix::ConvertAxisAngle2RotationMatrix(float x, float y, float z, float rad)
 {
     /* Normalize */

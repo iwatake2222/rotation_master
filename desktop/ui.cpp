@@ -49,6 +49,7 @@ Ui::Ui(Window& window)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.IniFilename = NULL;  // do not use ini
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -269,13 +270,13 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         int32_t dark_mode = setting_container.is_dark_mode ? 1 : 0;
         ImGui::Text("Color:"); ImGui::SameLine();
         ImGui::RadioButton("Dark", &dark_mode, 1); ImGui::SameLine();
-        ImGui::RadioButton("Normal", &dark_mode, 0); ImGui::SameLine();
+        ImGui::RadioButton("Bright", &dark_mode, 0); ImGui::SameLine();
         setting_container.is_dark_mode = (dark_mode == 1);
 
         int32_t draw_ground = setting_container.is_draw_ground ? 1 : 0;
         ImGui::Text("  /  Ground:"); ImGui::SameLine();
-        ImGui::RadioButton("On", &draw_ground, 1); ImGui::SameLine();
-        ImGui::RadioButton("Off", &draw_ground, 0);
+        ImGui::RadioButton("Draw", &draw_ground, 1); ImGui::SameLine();
+        ImGui::RadioButton("Hide", &draw_ground, 0);
         setting_container.is_draw_ground = (draw_ground == 1);
 
         ImGui::Separator();
@@ -291,6 +292,12 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::RadioButton("GoAround", &go_around, 1); ImGui::SameLine();
         ImGui::RadioButton("Free", &go_around, 0);
         setting_container.is_go_around = (go_around == 1);
+
+        int32_t is_normalize_rotation_matrix = setting_container.is_normalize_rotation_matrix ? 1 : 0;
+        ImGui::Text("Normalize Rotation Matrix:"); ImGui::SameLine();
+        ImGui::RadioButton("On", &is_normalize_rotation_matrix, 1); ImGui::SameLine();
+        ImGui::RadioButton("Off", &is_normalize_rotation_matrix, 0);
+        setting_container.is_normalize_rotation_matrix = (is_normalize_rotation_matrix == 1);
 
         ImGui::Separator();
         setting_container.is_reset_view_pressed = ImGui::Button("  Reset View  "); ImGui::SameLine();
