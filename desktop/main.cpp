@@ -90,7 +90,7 @@ static void ConvertAll(InputContainer& input_container, OutputContainer& output_
     output_container.quaternion = RotationMatrix::ConvertRotationMatrix2Quaternion(mat3_rot);
     for (int32_t i = 0; i < static_cast<int32_t>(sizeof(output_container.mobile_euler_angle) / sizeof(Matrix)); i++) {
         output_container.mobile_euler_angle[i] = RotationMatrix::ConvertRotationMatrix2EulerMobile(static_cast<RotationMatrix::EULER_ORDER>(i), mat3_rot);
-        output_container.fixed_euler_angle[i] = RotationMatrix::ConvertRotationMatrix2EulerMobile(static_cast<RotationMatrix::EULER_ORDER>(i), mat3_rot);
+        output_container.fixed_euler_angle[i] = RotationMatrix::ConvertRotationMatrix2EulerFixed(static_cast<RotationMatrix::EULER_ORDER>(i), mat3_rot);
     }
 }
 

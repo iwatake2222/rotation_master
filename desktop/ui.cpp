@@ -50,6 +50,7 @@ Ui::Ui(Window& window)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.IniFilename = NULL;  // do not use ini
+    io.ConfigWindowsMoveFromTitleBarOnly = true;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -278,8 +279,6 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::RadioButton("Draw", &draw_ground, 1); ImGui::SameLine();
         ImGui::RadioButton("Hide", &draw_ground, 0);
         setting_container.is_draw_ground = (draw_ground == 1);
-
-        ImGui::Separator();
 
         int32_t radio_degree = angle_unit.is_degree ? 1 : 0;
         ImGui::Text("Unit:"); ImGui::SameLine();
