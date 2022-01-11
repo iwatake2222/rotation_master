@@ -406,8 +406,9 @@ Matrix RotationMatrix::ConvertXYZ2PolarCoordinate(float x, float y, float z)
 {
     Matrix vec3 = Matrix(3, 1);
     float r = std::sqrt(x * x + y * y + z * z);
+    if (r == 0) return vec3;
     float theta_rad = 0;
-    if (r != 0) theta_rad = std::acos(z / r);
+    theta_rad = std::acos(z / r);
     float phi_rad = 0;
     phi_rad = std::acos(x / std::sqrt(x * x + y * y));
     if (y < 0) phi_rad *= -1;
