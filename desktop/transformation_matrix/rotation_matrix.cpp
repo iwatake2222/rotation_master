@@ -68,8 +68,9 @@ Matrix RotationMatrix::RotateZ(float rad)
 
 Matrix RotationMatrix::NormalizeRotationMatrix(const Matrix mat3_rot)
 {
-    /* todo */
-    return mat3_rot;
+    Matrix vec = RotationMatrix::ConvertRotationMatrix2Quaternion(mat3_rot);
+    Matrix mat3_rot_normalized = RotationMatrix::ConvertQuaternion2RotationMatrix(vec[0], vec[1], vec[2], vec[3]);
+    return mat3_rot_normalized;
 }
 
 Matrix RotationMatrix::ConvertAxisAngle2RotationMatrix(float x, float y, float z, float rad)
