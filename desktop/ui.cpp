@@ -147,8 +147,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::RadioButton("Euler Angle (Intrinsic; Mobile)", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_MOBILE));
-        if (ImGui::BeginTable("Euler Angle (Intrinsic; Mobile)", 4)) {
+        ImGui::RadioButton("Euler Angles (Intrinsic; Mobile)", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_MOBILE));
+        if (ImGui::BeginTable("Euler Angles (Intrinsic; Mobile)", 4)) {
             bool is_value_changed = false;
             float val[3] = { angle_unit.Display(input_container.mobile_euler_angle[0]), angle_unit.Display(input_container.mobile_euler_angle[1]), angle_unit.Display(input_container.mobile_euler_angle[2]) };
             ImGui::TableNextRow();
@@ -164,8 +164,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::RadioButton("Euler Angle (Extrinsic; Fixed)", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_FIXED));
-        if (ImGui::BeginTable("Euler Angle (Extrinsic; Fixed)", 4)) {
+        ImGui::RadioButton("Euler Angles (Extrinsic; Fixed)", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_FIXED));
+        if (ImGui::BeginTable("Euler Angles (Extrinsic; Fixed)", 4)) {
             bool is_value_changed = false;
             float val[3] = { angle_unit.Display(input_container.fixed_euler_angle[0]), angle_unit.Display(input_container.fixed_euler_angle[1]), angle_unit.Display(input_container.fixed_euler_angle[2]) };
             ImGui::TableNextRow();
@@ -230,8 +230,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::Text("Euler Angle (Intrinsic; Mobile)");
-        if (ImGui::BeginTable("Euler Angle (Intrinsic; Mobile)", 4)) {
+        ImGui::Text("Euler Angles (Intrinsic; Mobile)");
+        if (ImGui::BeginTable("Euler Angles (Intrinsic; Mobile)", 4)) {
             for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
@@ -244,8 +244,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::Text("Euler Angle (Extrinsic; Fixed)");
-        if (ImGui::BeginTable("Euler Angle (Extrinsic; Fixed)", 4)) {
+        ImGui::Text("Euler Angles (Extrinsic; Fixed)");
+        if (ImGui::BeginTable("Euler Angles (Extrinsic; Fixed)", 4)) {
             for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
@@ -292,11 +292,11 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::RadioButton("Degrees", &radio_degree, 1);
         angle_unit.is_degree = (radio_degree == 1);
 
-        int32_t go_around = setting_container.is_go_around ? 1 : 0;
-        ImGui::Text("Move:"); ImGui::SameLine();
-        ImGui::RadioButton("GoAround", &go_around, 1); ImGui::SameLine();
-        ImGui::RadioButton("Free", &go_around, 0);
-        setting_container.is_go_around = (go_around == 1);
+        int32_t is_revolution = setting_container.is_camera_revolution ? 1 : 0;
+        ImGui::Text("Camera:"); ImGui::SameLine();
+        ImGui::RadioButton("Revolution", &is_revolution, 1); ImGui::SameLine();
+        ImGui::RadioButton("Free", &is_revolution, 0);
+        setting_container.is_camera_revolution = (is_revolution == 1);
 
         int32_t is_normalize_rotation_matrix = setting_container.is_normalize_rotation_matrix ? 1 : 0;
         ImGui::Text("Normalize Rotation Matrix:"); ImGui::SameLine();

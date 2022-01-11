@@ -98,9 +98,9 @@ void Window::SetIsDarkMode(bool is_darkmode)
     m_is_darkmode = is_darkmode;
 }
 
-void Window::SetIsGoAround(bool is_go_around)
+void Window::SetIsCameraRevolution(bool is_camera_revolution)
 {
-    m_is_go_around = is_go_around;
+    m_is_camera_revolution = is_camera_revolution;
 }
 
 Matrix Window::GetViewProjectionFromAxisX(float cx, float cy, float fovy, float z_near, float z_far)
@@ -245,7 +245,7 @@ bool Window::FrameStart()
     m_last_mouse_y = mouse_y;
 
     if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_2) != GLFW_RELEASE) {
-        if (!m_is_go_around) {
+        if (!m_is_camera_revolution) {
             m_camera_angle[1] += mouse_move_x * MOUSE_ROT_SPEED;
             m_camera_angle[0] += mouse_move_y * MOUSE_ROT_SPEED;
         } else{
@@ -265,7 +265,7 @@ bool Window::FrameStart()
             LookAt({ m_camera_pos[0], m_camera_pos[1], m_camera_pos[2] }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
         }
     }
-    if (!m_is_go_around && glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_3) != GLFW_RELEASE) {
+    if (!m_is_camera_revolution && glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_3) != GLFW_RELEASE) {
         //m_camera_pos[0] -= mouse_move_x * MOUSE_MOV_SPEED;
         //m_camera_pos[1] -= -mouse_move_y * MOUSE_MOV_SPEED;
         float dx_in_camera_cord = -mouse_move_x * MOUSE_MOV_SPEED;

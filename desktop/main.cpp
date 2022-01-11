@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
         }
 
         my_window.SetIsDarkMode(setting_container.is_dark_mode);
-        my_window.SetIsGoAround(setting_container.is_go_around);
+        my_window.SetIsCameraRevolution(setting_container.is_camera_revolution);
 
         /* Update display */
         my_window.SwapBuffers();

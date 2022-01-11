@@ -47,7 +47,7 @@ public:
     
     GLFWwindow* GetWindow();
     void SetIsDarkMode(bool);
-    void SetIsGoAround(bool);
+    void SetIsCameraRevolution(bool);
     int32_t GetWidth();
     int32_t GetHeight();
 
@@ -66,7 +66,7 @@ private:
     double m_last_mouse_y;
 
     bool m_is_darkmode;
-    bool m_is_go_around;
+    bool m_is_camera_revolution;
 };
 
 

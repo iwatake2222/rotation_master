@@ -135,7 +135,7 @@ public:
         is_dark_mode = true;
         is_draw_ground = true;
         is_view_from_axis = true;
-        is_go_around = true;
+        is_camera_revolution = true;
         is_normalize_rotation_matrix = true;
         is_update_input_pressed = false;
         is_reset_view_pressed = false;
@@ -147,7 +147,7 @@ public:
     bool is_dark_mode;
     bool is_draw_ground;
     bool is_view_from_axis;
-    bool is_go_around;
+    bool is_camera_revolution;
     bool is_normalize_rotation_matrix;
     bool is_update_input_pressed;
     bool is_reset_view_pressed;
