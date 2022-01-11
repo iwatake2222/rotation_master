@@ -24,10 +24,18 @@ limitations under the License.
 #include "rotation_matrix.h"
 
 /*** Macro ***/
+static constexpr float ALMOST_ONE = 0.9999999f;
 
 /*** Global variable ***/
 
 /*** Function ***/
+static float clamp_one(float value)
+{
+    if (value <= -1.0) return -ALMOST_ONE;
+    else if (value >= 1.0) return ALMOST_ONE;
+    else return value;
+}
+
 Matrix RotationMatrix::RotateX(float rad)
 {
     Matrix mat3_rot = Matrix::Identity(3);
@@ -58,6 +66,13 @@ Matrix RotationMatrix::RotateZ(float rad)
     return mat3_rot;
 }
 
+Matrix RotationMatrix::NormalizeRotationMatrix(const Matrix mat3_rot)
+{
+    Matrix vec = RotationMatrix::ConvertRotationMatrix2Quaternion(mat3_rot);
+    Matrix mat3_rot_normalized = RotationMatrix::ConvertQuaternion2RotationMatrix(vec[0], vec[1], vec[2], vec[3]);
+    return mat3_rot_normalized;
+}
+
 Matrix RotationMatrix::ConvertAxisAngle2RotationMatrix(float x, float y, float z, float rad)
 {
     /* Normalize */
@@ -70,19 +85,21 @@ Matrix RotationMatrix::ConvertAxisAngle2RotationMatrix(float x, float y, float z
     z /= d;
 
     /* Rodrigues' rotation formula */
-    /* https://ja.wikipedia.org/wiki/ロドリゲスの回転公式 */
+    /* http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/index.htm */
     Matrix mat3_rot = Matrix::Identity(3);
+    
     const float c = std::cos(rad);
     const float s = std::sin(rad);
-    mat3_rot[0] = c + x * x * (1 - c);;
-    mat3_rot[1] = x * y * (1 - c) - z * s;
-    mat3_rot[2] = z * x * (1 - c) + y * s;
-    mat3_rot[3] = x * y * (1 - c) + z * s;
-    mat3_rot[4] = c + y * y * (1 - c);
-    mat3_rot[5] = y * z * (1 - c) - x * s;
-    mat3_rot[6] = z * x * (1 - c) - y * s;
-    mat3_rot[7] = y * z * (1 - c) + x * s;
-    mat3_rot[8] = c + z * z * (1 - c);
+    const float t = 1.0f - c;
+    mat3_rot[0] = t * x * x + c;
+    mat3_rot[1] = t * x * y - z * s;
+    mat3_rot[2] = t * x * z + y * s;
+    mat3_rot[3] = t * x * y + z * s;
+    mat3_rot[4] = t * y * y + c;
+    mat3_rot[5] = t * y * z - x * s;
+    mat3_rot[6] = t * x * z - y * s;
+    mat3_rot[7] = t * y * z + x * s;
+    mat3_rot[8] = t * z * z + c;
 
     return mat3_rot;
 
@@ -112,18 +129,17 @@ Matrix RotationMatrix::ConvertQuaternion2RotationMatrix(float x, float y, float 
     z /= d;
     w /= d;
 
+    /* http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm */
     Matrix mat3_rot = Matrix::Identity(3);
-    mat3_rot(0, 0) = 2 * w * w + 2 * x * x - 1;
+    mat3_rot(0, 0) = 1 - 2 * y * y - 2 * z * z;
     mat3_rot(0, 1) = 2 * x * y - 2 * z * w;
     mat3_rot(0, 2) = 2 * x * z + 2 * y * w;
-
     mat3_rot(1, 0) = 2 * x * y + 2 * z * w;
-    mat3_rot(1, 1) = 2 * w * w + 2 * y * y - 1;
+    mat3_rot(1, 1) = 1 - 2 * x * x - 2 * z * z;
     mat3_rot(1, 2) = 2 * y * z - 2 * x * w;
-
     mat3_rot(2, 0) = 2 * x * z - 2 * y * w;
     mat3_rot(2, 1) = 2 * y * z + 2 * x * w;
-    mat3_rot(2, 2) = 2 * w * w + 2 * z * z - 1;
+    mat3_rot(2, 2) = 1 - 2 * x * x - 2 * y * y;
     return mat3_rot;
 }
 
@@ -180,13 +196,219 @@ Matrix RotationMatrix::ConvertEulerFixed2RotationMatrix(RotationMatrix::EULER_OR
     return mat3_rot;
 }
 
+
+Matrix RotationMatrix::ConvertRotationMatrix2RotationVector(const Matrix& mat3_rot)
+{
+    Matrix vec3 = Matrix(3, 1);
+
+    Matrix vec4_axisangle = ConvertRotationMatrix2AxisAngle(mat3_rot);
+    vec3[0] = vec4_axisangle[0] * vec4_axisangle[3];
+    vec3[1] = vec4_axisangle[1] * vec4_axisangle[3];
+    vec3[2] = vec4_axisangle[2] * vec4_axisangle[3];
+    return vec3;
+}
+
+Matrix RotationMatrix::ConvertRotationMatrix2AxisAngle(const Matrix& mat3_rot)
+{
+    Matrix vec4 = Matrix(4, 1);
+    /* http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/ */
+    float d = static_cast<float>(std::sqrt(
+        std::pow(mat3_rot(2, 1) - mat3_rot(1, 2), 2)
+        + std::pow(mat3_rot(0, 2) - mat3_rot(2, 0), 2)
+        + std::pow(mat3_rot(1, 0) - mat3_rot(0, 1), 2)
+    ));
+    if (d > 0) {
+        vec4[0] = (mat3_rot(2, 1) - mat3_rot(1, 2)) / d;
+        vec4[1] = (mat3_rot(0, 2) - mat3_rot(2, 0)) / d;
+        vec4[2] = (mat3_rot(1, 0) - mat3_rot(0, 1)) / d;
+        vec4[3] = std::acos((mat3_rot(0, 0) + mat3_rot(1, 1) + mat3_rot(2, 2) - 1) / 2);
+    }
+    
+    return vec4;
+}
+
+Matrix RotationMatrix::ConvertRotationMatrix2Quaternion(const Matrix& mat3_rot)
+{
+    /* http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm */
+    Matrix vec4 = Matrix(4, 1);
+    
+    float tr = mat3_rot(0, 0) + mat3_rot(1, 1) + mat3_rot(2, 2);
+    if (tr > 0) {
+        float S = std::sqrt(tr + 1.0f) * 2;
+        vec4[3] = 0.25f * S;
+        vec4[0] = (mat3_rot(2, 1) - mat3_rot(1, 2)) / S;
+        vec4[1] = (mat3_rot(0, 2) - mat3_rot(2, 0)) / S;
+        vec4[2] = (mat3_rot(1, 0) - mat3_rot(0, 1)) / S;
+    } else if ((mat3_rot(0, 0) > mat3_rot(1, 1)) & (mat3_rot(0, 0) > mat3_rot(2, 2))) {
+        float S = std::sqrt(1.0f + mat3_rot(0, 0) - mat3_rot(1, 1) - mat3_rot(2, 2)) * 2;
+        vec4[3] = (mat3_rot(2, 1) - mat3_rot(1, 2)) / S; 
+        vec4[0] = 0.25f * S;
+        vec4[1] = (mat3_rot(0, 1) + mat3_rot(1, 0)) / S;
+        vec4[2] = (mat3_rot(0, 2) + mat3_rot(2, 0)) / S;
+    } else if (mat3_rot(1, 1) > mat3_rot(2, 2)) {
+        float S = std::sqrt(1.0f + mat3_rot(1, 1) - mat3_rot(0, 0) - mat3_rot(2, 2)) * 2;
+        vec4[3] = (mat3_rot(0, 2) - mat3_rot(2, 0)) / S;
+        vec4[0] = (mat3_rot(0, 1) + mat3_rot(1, 0)) / S;
+        vec4[1] = 0.25f * S; 
+        vec4[2] = (mat3_rot(1, 2) + mat3_rot(2, 1)) / S;
+    } else {
+        float S = std::sqrt(1.0f + mat3_rot(2, 2) - mat3_rot(0, 0) - mat3_rot(1, 1)) * 2;
+        vec4[3] = (mat3_rot(1, 0) - mat3_rot(0, 1)) / S;
+        vec4[0] = (mat3_rot(0, 2) + mat3_rot(2, 0)) / S;
+        vec4[1] = (mat3_rot(1, 2) + mat3_rot(2, 1)) / S;
+        vec4[2] = 0.25f * S; 
+    }
+  
+    return vec4;
+}
+
+Matrix RotationMatrix::ConvertRotationMatrix2EulerMobile(RotationMatrix::EULER_ORDER order, const Matrix& mat3_rot)
+{
+    /* https://github.com/mrdoob/three.js/blob/cab469bc0dad1f79b83a7b8c3c51dcf9d7291622/src/math/Euler.js#L104 */
+    Matrix vec3 = Matrix(3, 1);
+    switch (order) {
+    case EULER_ORDER::XYZ:
+        vec3[1] = std::asin(clamp_one(mat3_rot(0, 2)));
+        if (std::abs(mat3_rot(0, 2)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(-mat3_rot(1, 2), mat3_rot(2, 2));
+            vec3[2] = std::atan2(-mat3_rot(0, 1), mat3_rot(0, 0));
+        } else {
+            vec3[0] = std::atan2(mat3_rot(2, 1), mat3_rot(1, 1));
+            vec3[2] = 0;
+        }
+        break;
+    case EULER_ORDER::XZY:
+        vec3[2] = std::asin(clamp_one(-mat3_rot(0, 1)));
+        if (std::abs(mat3_rot(0, 1)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(mat3_rot(2, 1), mat3_rot(1, 1));
+            vec3[1] = std::atan2(mat3_rot(0, 2), mat3_rot(0, 0));
+        } else {
+            vec3[0] = 0;
+            vec3[1] = std::atan2(-mat3_rot(1, 2), mat3_rot(2, 2));
+        }
+        break;
+        break;
+    case EULER_ORDER::YXZ:
+        vec3[0] = std::asin(clamp_one(-mat3_rot(1, 2)));
+        if (std::abs(mat3_rot(1, 2)) < ALMOST_ONE) {
+            vec3[1] = std::atan2(mat3_rot(0, 2), mat3_rot(2, 2));
+            vec3[2] = std::atan2(mat3_rot(1, 0), mat3_rot(1, 1));
+        } else {
+            vec3[1] = std::atan2(-mat3_rot(2, 0), mat3_rot(0, 0));
+            vec3[2] = 0;
+        }
+        break;
+    case EULER_ORDER::YZX:
+        vec3[2] = std::asin(clamp_one(mat3_rot(1, 0)));
+        if (std::abs(mat3_rot(1, 0)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(-mat3_rot(1, 2), mat3_rot(1, 1));
+            vec3[1] = std::atan2(-mat3_rot(2, 0), mat3_rot(0, 0));
+        } else {
+            vec3[0] = 0;
+            vec3[1] = std::atan2(mat3_rot(0, 2), mat3_rot(2, 2));
+        }
+        break;
+    case EULER_ORDER::ZXY:
+        vec3[0] = std::asin(clamp_one(mat3_rot(2, 1)));
+        if (std::abs(mat3_rot(2, 1)) < ALMOST_ONE) {
+            vec3[1] = std::atan2(-mat3_rot(2, 0), mat3_rot(2, 2));
+            vec3[2] = std::atan2(-mat3_rot(0, 1), mat3_rot(1, 1));
+        } else {
+            vec3[1] = 0;
+            vec3[2] = std::atan2(mat3_rot(1, 0), mat3_rot(0, 0));
+        }
+        break;
+    case EULER_ORDER::ZYX:
+        vec3[1] = std::asin(clamp_one(-mat3_rot(2, 0)));
+        if (std::abs(mat3_rot(2, 0)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(mat3_rot(2, 1), mat3_rot(2, 2));
+            vec3[2] = std::atan2(mat3_rot(1, 0), mat3_rot(0, 0));
+        } else {
+            vec3[0] = 0;
+            vec3[2] = std::atan2(-mat3_rot(0, 1), mat3_rot(1, 1));
+        }
+        break;
+    }
+    return vec3;
+}
+Matrix RotationMatrix::ConvertRotationMatrix2EulerFixed(RotationMatrix::EULER_ORDER order, const Matrix& mat3_rot)
+{
+    /* https://github.com/mrdoob/three.js/blob/cab469bc0dad1f79b83a7b8c3c51dcf9d7291622/src/math/Euler.js#L104 */
+    Matrix vec3 = Matrix(3, 1);
+    switch (order) {
+    case EULER_ORDER::XYZ:
+        vec3[1] = std::asin(clamp_one(-mat3_rot(2, 0)));
+        if (std::abs(mat3_rot(2, 0)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(mat3_rot(2, 1), mat3_rot(2, 2));
+            vec3[2] = std::atan2(mat3_rot(1, 0), mat3_rot(0, 0));
+        } else {
+            vec3[0] = 0;
+            vec3[2] = std::atan2(-mat3_rot(0, 1), mat3_rot(1, 1));
+        }
+        break;
+    case EULER_ORDER::XZY:
+        vec3[2] = std::asin(clamp_one(mat3_rot(1, 0)));
+        if (std::abs(mat3_rot(1, 0)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(-mat3_rot(1, 2), mat3_rot(1, 1));
+            vec3[1] = std::atan2(-mat3_rot(2, 0), mat3_rot(0, 0));
+        } else {
+            vec3[0] = 0;
+            vec3[1] = std::atan2(mat3_rot(0, 2), mat3_rot(2, 2));
+        }
+        break;
+    case EULER_ORDER::YXZ:
+        vec3[0] = std::asin(clamp_one(mat3_rot(2, 1)));
+        if (std::abs(mat3_rot(2, 1)) < ALMOST_ONE) {
+            vec3[1] = std::atan2(-mat3_rot(2, 0), mat3_rot(2, 2));
+            vec3[2] = std::atan2(-mat3_rot(0, 1), mat3_rot(1, 1));
+        } else {
+            vec3[1] = 0;
+            vec3[2] = std::atan2(mat3_rot(1, 0), mat3_rot(0, 0));
+        }
+        break;
+    case EULER_ORDER::YZX:
+        vec3[2] = std::asin(clamp_one(-mat3_rot(0, 1)));
+        if (std::abs(mat3_rot(0, 1)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(mat3_rot(2, 1), mat3_rot(1, 1));
+            vec3[1] = std::atan2(mat3_rot(0, 2), mat3_rot(0, 0));
+        } else {
+            vec3[0] = 0;
+            vec3[1] = std::atan2(-mat3_rot(1, 2), mat3_rot(2, 2));
+        }
+        break;
+    case EULER_ORDER::ZXY:
+        vec3[0] = std::asin(clamp_one(-mat3_rot(1, 2)));
+        if (std::abs(mat3_rot(1, 2)) < ALMOST_ONE) {
+            vec3[1] = std::atan2(mat3_rot(0, 2), mat3_rot(2, 2));
+            vec3[2] = std::atan2(mat3_rot(1, 0), mat3_rot(1, 1));
+        } else {
+            vec3[1] = std::atan2(-mat3_rot(2, 0), mat3_rot(0, 0));
+            vec3[2] = 0;
+        }
+        break;
+    case EULER_ORDER::ZYX:
+        vec3[1] = std::asin(clamp_one(mat3_rot(0, 2)));
+        if (std::abs(mat3_rot(0, 2)) < ALMOST_ONE) {
+            vec3[0] = std::atan2(-mat3_rot(1, 2), mat3_rot(2, 2));
+            vec3[2] = std::atan2(-mat3_rot(0, 1), mat3_rot(0, 0));
+        } else {
+            vec3[0] = std::atan2(mat3_rot(2, 1), mat3_rot(1, 1));
+            vec3[2] = 0;
+        }
+        break;
+    }
+    return vec3;
+}
+
+
 /* Note: xyz is not on OpenGL coordinate */
 Matrix RotationMatrix::ConvertXYZ2PolarCoordinate(float x, float y, float z)
 {
     Matrix vec3 = Matrix(3, 1);
     float r = std::sqrt(x * x + y * y + z * z);
+    if (r == 0) return vec3;
     float theta_rad = 0;
-    if (r != 0) theta_rad = std::acos(z / r);
+    theta_rad = std::acos(z / r);
     float phi_rad = 0;
     phi_rad = std::acos(x / std::sqrt(x * x + y * y));
     if (y < 0) phi_rad *= -1;

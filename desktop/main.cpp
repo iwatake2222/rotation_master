@@ -51,7 +51,7 @@ static constexpr float PROJECTION_OFFSET_CY = 0.2f; /* add offset for cx because
 /*** Global variable ***/
 
 /*** Function ***/
-static void ConvertAll(InputContainer& input_container, OutputContainer& output_container)
+static void ConvertAll(InputContainer& input_container, OutputContainer& output_container, bool is_normalize_rotation_matrix)
 {
     /* First, Convert the selected input representation to rotatin matrix (mat3_rot) */
     Matrix mat3_rot = Matrix::Identity(3);
@@ -59,6 +59,9 @@ static void ConvertAll(InputContainer& input_container, OutputContainer& output_
     case REPRESENTATION_TYPE::ROTATION_MATRIX:
         for (int32_t i = 0; i < 9; i++) {
             mat3_rot[i] = input_container.rotation_matrix[i];
+        }
+        if (is_normalize_rotation_matrix) {
+            mat3_rot = RotationMatrix::NormalizeRotationMatrix(mat3_rot);
         }
         break;
     case REPRESENTATION_TYPE::ROTATION_VECTOR:
@@ -78,12 +81,17 @@ static void ConvertAll(InputContainer& input_container, OutputContainer& output_
         break;
     }
 
-    /* Then, Convert the calculated rotation matrix (mat3_rot) to all the representations (output) */
+    /* Then, Convert the calculated rotation matrix (mat3_rot) to all the other representations (output) */
     for (int32_t i = 0; i < 9; i++) {
         output_container.rotation_matrix[i] = mat3_rot[i];
     }
-
-    // todo
+    output_container.rotation_vector = RotationMatrix::ConvertRotationMatrix2RotationVector(mat3_rot);
+    output_container.axis_angle = RotationMatrix::ConvertRotationMatrix2AxisAngle(mat3_rot);
+    output_container.quaternion = RotationMatrix::ConvertRotationMatrix2Quaternion(mat3_rot);
+    for (int32_t i = 0; i < static_cast<int32_t>(sizeof(output_container.mobile_euler_angle) / sizeof(Matrix)); i++) {
+        output_container.mobile_euler_angle[i] = RotationMatrix::ConvertRotationMatrix2EulerMobile(static_cast<RotationMatrix::EULER_ORDER>(i), mat3_rot);
+        output_container.fixed_euler_angle[i] = RotationMatrix::ConvertRotationMatrix2EulerFixed(static_cast<RotationMatrix::EULER_ORDER>(i), mat3_rot);
+    }
 }
 
 static void OverwriteInput(InputContainer& input_container, OutputContainer& output_container)
@@ -154,7 +162,7 @@ int main(int argc, char *argv[])
         }
 
         /* Convert representations of rotation */
-        ConvertAll(input_container, output_container);
+        ConvertAll(input_container, output_container, setting_container.is_normalize_rotation_matrix);
         if (setting_container.is_update_input_pressed) {
             OverwriteInput(input_container, output_container);
         }
