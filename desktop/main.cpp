@@ -154,6 +154,27 @@ int main(int argc, char *argv[])
         Shape::SetLineWidth(10.0f);
         object_axes->Draw(my_window.GetViewProjection(PROJECTION_OFFSET_CX, PROJECTION_OFFSET_CY), model_pose);
 
+        /* Draw monolith from each axis*/
+        if (setting_container.is_view_from_axis) {
+            Shape::SetLineWidth(2.0f);
+            static constexpr float SIZE_VIEW_FROM_AXIS = 0.1f;
+            static constexpr float START_POS_OF_VIEW_FROM_AXIS = 0.4f;
+            static constexpr float INTERVAL_OF_VIEW_FROM_AXIS = 0.6f;
+            model_pose = model_pose * TransformationMatrix::Scale(SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS);
+            Matrix view_projection_from_x = my_window.GetViewProjectionFromAxisX(-(0.91f - SIZE_VIEW_FROM_AXIS), -START_POS_OF_VIEW_FROM_AXIS + INTERVAL_OF_VIEW_FROM_AXIS * 0);
+            Matrix view_projection_from_y = my_window.GetViewProjectionFromAxisY(-(0.91f - SIZE_VIEW_FROM_AXIS), -START_POS_OF_VIEW_FROM_AXIS + INTERVAL_OF_VIEW_FROM_AXIS * 1);
+            Matrix view_projection_from_z = my_window.GetViewProjectionFromAxisZ(-(0.91f - SIZE_VIEW_FROM_AXIS), -START_POS_OF_VIEW_FROM_AXIS + INTERVAL_OF_VIEW_FROM_AXIS * 2);
+            axes->Draw(view_projection_from_x, TransformationMatrix::Scale(SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS));
+            object->Draw(view_projection_from_x, model_pose);
+            object_axes->Draw(view_projection_from_x, model_pose);
+            axes->Draw(view_projection_from_y, TransformationMatrix::Scale(SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS));
+            object->Draw(view_projection_from_y, model_pose);
+            object_axes->Draw(view_projection_from_y, model_pose);
+            axes->Draw(view_projection_from_z, TransformationMatrix::Scale(SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS, SIZE_VIEW_FROM_AXIS));
+            object->Draw(view_projection_from_z, model_pose);
+            object_axes->Draw(view_projection_from_z, model_pose);
+        }
+
         /* Draw UI */
         my_ui.Update(my_window, angle_unit, input_container, output_container, setting_container);
 

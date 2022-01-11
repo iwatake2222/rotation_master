@@ -103,6 +103,34 @@ void Window::SetIsGoAround(bool is_go_around)
     m_is_go_around = is_go_around;
 }
 
+Matrix Window::GetViewProjectionFromAxisX(float cx, float cy, float fovy, float z_near, float z_far)
+{
+    Matrix view = Matrix::Identity(4);
+    view = TransformationMatrix::Translate(-1.0f, 0.0f, 0.0f) * view;  /* move to origin */
+    view = TransformationMatrix::RotateY(static_cast<float>(-M_PI / 2.0)) * view; /* rotate*/
+    const float aspect = static_cast<float>(m_width) / m_height;
+    const Matrix projection = ProjectionMatrix::Perspective(cx, cy, fovy, aspect, z_near, z_far);
+    return projection * view;
+}
+
+Matrix Window::GetViewProjectionFromAxisY(float cx, float cy, float fovy, float z_near, float z_far)
+{
+    Matrix view = Matrix::Identity(4);
+    view = TransformationMatrix::Translate(0.0f, -1.0f, 0.0f) * view;  /* move to origin */
+    view = TransformationMatrix::RotateX(static_cast<float>(M_PI / 2.0)) * view; /* rotate*/
+    const float aspect = static_cast<float>(m_width) / m_height;
+    const Matrix projection = ProjectionMatrix::Perspective(cx, cy, fovy, aspect, z_near, z_far);
+    return projection * view;
+}
+
+Matrix Window::GetViewProjectionFromAxisZ(float cx, float cy, float fovy, float z_near, float z_far)
+{
+    Matrix view = Matrix::Identity(4);
+    view = TransformationMatrix::Translate(0.0f, 0.0f, -1.0f) * view;  /* move to origin */
+    const float aspect = static_cast<float>(m_width) / m_height;
+    const Matrix projection = ProjectionMatrix::Perspective(cx, cy, fovy, aspect, z_near, z_far);
+    return projection * view;
+}
 Matrix Window::GetViewProjection(float cx, float cy, float fovy, float z_near, float z_far)
 {
     Matrix view = Matrix::Identity(4);
@@ -237,7 +265,7 @@ bool Window::FrameStart()
             LookAt({ m_camera_pos[0], m_camera_pos[1], m_camera_pos[2] }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
         }
     }
-    if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_3) != GLFW_RELEASE) {
+    if (!m_is_go_around && glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_3) != GLFW_RELEASE) {
         //m_camera_pos[0] -= mouse_move_x * MOUSE_MOV_SPEED;
         //m_camera_pos[1] -= -mouse_move_y * MOUSE_MOV_SPEED;
         float dx_in_camera_cord = -mouse_move_x * MOUSE_MOV_SPEED;
@@ -245,21 +273,21 @@ bool Window::FrameStart()
         MoveCameraPosFromCameraCoordinate(dx_in_camera_cord, dy_in_camera_cord, 0);
     }
     
-    if (glfwGetKey(m_window, GLFW_KEY_W) != GLFW_RELEASE) {
-        m_camera_pos[2] -= delta_time * KEY_SPEED;
-    } else if (glfwGetKey(m_window, GLFW_KEY_S) != GLFW_RELEASE) {
-        m_camera_pos[2] += delta_time * KEY_SPEED;
-    }
-    if (glfwGetKey(m_window, GLFW_KEY_A) != GLFW_RELEASE) {
-        m_camera_pos[0] -= delta_time * KEY_SPEED;
-    } else if (glfwGetKey(m_window, GLFW_KEY_D) != GLFW_RELEASE) {
-        m_camera_pos[0] += delta_time * KEY_SPEED;
-    }
-    if (glfwGetKey(m_window, GLFW_KEY_Z) != GLFW_RELEASE) {
-        m_camera_pos[1] -= delta_time * KEY_SPEED;
-    } else if (glfwGetKey(m_window, GLFW_KEY_X) != GLFW_RELEASE) {
-        m_camera_pos[1] += delta_time * KEY_SPEED;
-    }
+    //if (glfwGetKey(m_window, GLFW_KEY_W) != GLFW_RELEASE) {
+    //    m_camera_pos[2] -= delta_time * KEY_SPEED;
+    //} else if (glfwGetKey(m_window, GLFW_KEY_S) != GLFW_RELEASE) {
+    //    m_camera_pos[2] += delta_time * KEY_SPEED;
+    //}
+    //if (glfwGetKey(m_window, GLFW_KEY_A) != GLFW_RELEASE) {
+    //    m_camera_pos[0] -= delta_time * KEY_SPEED;
+    //} else if (glfwGetKey(m_window, GLFW_KEY_D) != GLFW_RELEASE) {
+    //    m_camera_pos[0] += delta_time * KEY_SPEED;
+    //}
+    //if (glfwGetKey(m_window, GLFW_KEY_Z) != GLFW_RELEASE) {
+    //    m_camera_pos[1] -= delta_time * KEY_SPEED;
+    //} else if (glfwGetKey(m_window, GLFW_KEY_X) != GLFW_RELEASE) {
+    //    m_camera_pos[1] += delta_time * KEY_SPEED;
+    //}
     
     if (m_is_darkmode) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f); 
