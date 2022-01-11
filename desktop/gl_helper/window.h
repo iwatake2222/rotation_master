@@ -41,6 +41,10 @@ public:
     bool FrameStart();
     void SwapBuffers();
     Matrix GetViewProjection(float cx = 0.0f, float cy = 0.0f, float fovy = 1.0f, float z_near = 0.1f, float z_far = 1000.0f);
+    Matrix GetViewProjectionFromAxisX(float cx = 0.0f, float cy = 0.0f, float fovy = 1.0f, float z_near = 0.9f, float z_far = 1000.0f);
+    Matrix GetViewProjectionFromAxisY(float cx = 0.0f, float cy = 0.0f, float fovy = 1.0f, float z_near = 0.9f, float z_far = 1000.0f);
+    Matrix GetViewProjectionFromAxisZ(float cx = 0.0f, float cy = 0.0f, float fovy = 1.0f, float z_near = 0.9f, float z_far = 1000.0f);
+    
     GLFWwindow* GetWindow();
     void SetIsDarkMode(bool);
     void SetIsGoAround(bool);

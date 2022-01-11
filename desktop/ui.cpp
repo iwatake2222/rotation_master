@@ -280,6 +280,12 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         ImGui::RadioButton("Hide", &draw_ground, 0);
         setting_container.is_draw_ground = (draw_ground == 1);
 
+        int32_t view_from_axis = setting_container.is_view_from_axis ? 1 : 0;
+        ImGui::Text("View from Axis:"); ImGui::SameLine();
+        ImGui::RadioButton("Draw ", &view_from_axis, 1); ImGui::SameLine();
+        ImGui::RadioButton("Hide ", &view_from_axis, 0);
+        setting_container.is_view_from_axis = (view_from_axis == 1);
+
         int32_t radio_degree = angle_unit.is_degree ? 1 : 0;
         ImGui::Text("Unit:"); ImGui::SameLine();
         ImGui::RadioButton("Radians", &radio_degree, 0); ImGui::SameLine();
