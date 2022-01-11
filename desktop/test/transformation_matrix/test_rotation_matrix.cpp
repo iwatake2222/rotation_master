@@ -125,7 +125,7 @@ TEST_F(TestRotationMatrix, NormalizeRotationMatrix)
     Matrix mat_rot_normalized = RotationMatrix::NormalizeRotationMatrix(mat_rot);
     EXPECT_FLOAT_EQ(0.8571429f, mat_rot_normalized(0, 0));
     EXPECT_FLOAT_EQ(0.2857143f, mat_rot_normalized(0, 1));
-    EXPECT_FLOAT_EQ(-0.4285714, mat_rot_normalized(0, 2));
+    EXPECT_FLOAT_EQ(-0.4285714f, mat_rot_normalized(0, 2));
     EXPECT_FLOAT_EQ(-0.1714286f, mat_rot_normalized(1, 0));
     EXPECT_FLOAT_EQ(0.9428571f, mat_rot_normalized(1, 1));
     EXPECT_FLOAT_EQ(0.2857143f, mat_rot_normalized(1, 2));
