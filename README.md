@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/11009876/148989308-2d9c70b0-d25e-4124-b109-2fcb03c8ebb9.png)
+![image](https://user-images.githubusercontent.com/11009876/148997642-8a54899a-8547-44a8-a211-b7d8f4b9b063.png)
 
 # Rotation Master
 - Provide conversion between the following representations of 3D rotation and display a rigid body orientation
