@@ -1,18 +1,15 @@
-# +++++++++++++++++++++
-# Under development
-# +++++++++++++++++++++
-
-![image](https://user-images.githubusercontent.com/11009876/148526709-ecfff1a4-e0e4-4cc5-ab08-d74964e935f2.png)
-
+![image](https://user-images.githubusercontent.com/11009876/148989308-2d9c70b0-d25e-4124-b109-2fcb03c8ebb9.png)
 
 # Rotation Master
-- Provide conversion between the following representations of 3D rotation and display the pose
+- Provide conversion between the following representations of 3D rotation (rigid body orientation) and display the pose
     - Rotation Matrix
     - Rotation Vector
     - Axis-angle
     - Quaternion
-    - Euler Angle (Intrinsic(Mobile))
-    - Euler Angle (Extrinsic(Fixed))
+    - Euler Angle (Intrinsic; Mobile)
+    - Euler Angle (Extrinsic; Fixed)
+
+https://user-images.githubusercontent.com/11009876/148988739-5f775a11-c923-4557-aff7-12b9a4811d36.mp4
 
 ## CI Status
 Status | Build Type

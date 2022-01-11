@@ -147,8 +147,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::RadioButton("Intrinsic (Mobile) Euler Angle", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_MOBILE));
-        if (ImGui::BeginTable("Intrinsic (Mobile) Euler Angle", 4)) {
+        ImGui::RadioButton("Euler Angle (Intrinsic; Mobile)", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_MOBILE));
+        if (ImGui::BeginTable("Euler Angle (Intrinsic; Mobile)", 4)) {
             bool is_value_changed = false;
             float val[3] = { angle_unit.Display(input_container.mobile_euler_angle[0]), angle_unit.Display(input_container.mobile_euler_angle[1]), angle_unit.Display(input_container.mobile_euler_angle[2]) };
             ImGui::TableNextRow();
@@ -164,8 +164,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::RadioButton("Extrinsic (Fixed) Euler Angle", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_FIXED));
-        if (ImGui::BeginTable("Extrinsic (Fixed) Euler Angle", 4)) {
+        ImGui::RadioButton("Euler Angle (Extrinsic; Fixed)", &input_container.selected_representation_type, static_cast<int32_t>(REPRESENTATION_TYPE::EULER_FIXED));
+        if (ImGui::BeginTable("Euler Angle (Extrinsic; Fixed)", 4)) {
             bool is_value_changed = false;
             float val[3] = { angle_unit.Display(input_container.fixed_euler_angle[0]), angle_unit.Display(input_container.fixed_euler_angle[1]), angle_unit.Display(input_container.fixed_euler_angle[2]) };
             ImGui::TableNextRow();
@@ -230,8 +230,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::Text("Intrinsic (Mobile) Euler Angle");
-        if (ImGui::BeginTable("Intrinsic (Mobile) Euler Angle", 4)) {
+        ImGui::Text("Euler Angle (Intrinsic; Mobile)");
+        if (ImGui::BeginTable("Euler Angle (Intrinsic; Mobile)", 4)) {
             for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
@@ -244,8 +244,8 @@ void Ui::Update(Window& window, AngleUnit& angle_unit, InputContainer& input_con
         }
         ImGui::Separator();
 
-        ImGui::Text("Extrinsic (Fixed) Euler Angle");
-        if (ImGui::BeginTable("Extrinsic (Fixed) Euler Angle", 4)) {
+        ImGui::Text("Euler Angle (Extrinsic; Fixed)");
+        if (ImGui::BeginTable("Euler Angle (Extrinsic; Fixed)", 4)) {
             for (int32_t i = 0; i < static_cast<int32_t>(sizeof(EULER_ORDER_STR) / sizeof(char*)); i++) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0); ImGui::Text("%s", EULER_ORDER_STR[i]);
