@@ -15,3 +15,13 @@ else()
         set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type (default Release)" FORCE)
     endif()
 endif()
+
+if (EMSCRIPTEN)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGLFW_INCLUDE_ES3 -DIMGUI_IMPL_OPENGL_ES3 \
+        -s USE_WEBGL2=1 \
+        -s FULL_ES3=1 \
+        -s USE_GLFW=3"
+    )
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -DNDEBUG")
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+endif()

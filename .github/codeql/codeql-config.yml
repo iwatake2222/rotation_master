@@ -4,7 +4,7 @@ name: "CodeQL Configuration"
 # So, manually ignore files on GitHub
 
 # paths:
-#   - desktop
+#   - src
 # paths-ignore:
 #   - "**/test/**"
 #   - "**/third_party/**"

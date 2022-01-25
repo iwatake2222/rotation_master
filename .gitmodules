@@ -1,9 +1,9 @@
-[submodule "desktop/third_party/glfw"]
-	path = desktop/third_party/glfw
+[submodule "src/third_party/glfw"]
+	path = src/third_party/glfw
 	url = https://github.com/glfw/glfw
-[submodule "desktop/test/third_party/googletest"]
-	path = desktop/test/third_party/googletest
+[submodule "src/test/third_party/googletest"]
+	path = src/test/third_party/googletest
 	url = https://github.com/google/googletest
-[submodule "desktop/third_party/imgui"]
-	path = desktop/third_party/imgui
+[submodule "src/third_party/imgui"]
+	path = src/third_party/imgui
 	url = https://github.com/ocornut/imgui

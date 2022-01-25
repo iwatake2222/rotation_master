@@ -66,7 +66,7 @@ jobs:
         git submodule update --init --recursive --recommend-shallow --depth 1
         sudo apt-get -y install cmake g++
         sudo apt-get -y install libglu1-mesa-dev mesa-common-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
-        cd desktop
+        cd src
         mkdir -p build
         cd build
         cmake .. -DBUILD_TESTS=OFF

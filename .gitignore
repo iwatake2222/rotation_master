@@ -1,6 +1,8 @@
 .vscode/
 build/
 build_coverage/
+build_em/
+src/third_party/glew/
 
 # Prerequisites
 *.d

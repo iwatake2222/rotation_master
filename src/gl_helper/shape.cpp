@@ -74,7 +74,12 @@ Shape::Shape(const std::vector<Object::Vertex>& vertex_list, const std::vector<G
 {
     /* Load Shader Program */
     static const GLchar vsrc[] =
+#ifdef __EMSCRIPTEN__
+        "#version 300 es\n"
+        "precision mediump float;\n"
+#else
         "#version 150 core\n"
+#endif
         "uniform mat4 modelviewprojection;\n"
         "in vec4 position;\n"
         "in vec4 color;\n"
@@ -85,7 +90,12 @@ Shape::Shape(const std::vector<Object::Vertex>& vertex_list, const std::vector<G
         " gl_Position = modelviewprojection * position;\n"
         "}";
     static constexpr GLchar fsrc[] =
+#ifdef __EMSCRIPTEN__
+        "#version 300 es\n"
+        "precision mediump float;\n"
+#else
         "#version 150 core\n"
+#endif
         "in vec4 vertex_color;\n"
         "out vec4 fragment;\n"
         "void main()\n"

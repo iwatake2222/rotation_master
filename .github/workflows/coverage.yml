@@ -27,12 +27,12 @@ jobs:
         sudo apt-get -y install libglu1-mesa-dev mesa-common-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
 
     - name: Build and Run
-      working-directory: ./desktop
+      working-directory: ./src
       run: bash ./run_coverage.sh
 
     - name: Upload Artifacts (code coverage)
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report
-        path: desktop/build_coverage/coverage/index.html
-        # path: desktop/build_coverage/coverage/*
+        path: src/build_coverage/coverage/index.html
+        # path: src/build_coverage/coverage/*
