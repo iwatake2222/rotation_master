@@ -21,6 +21,7 @@ limitations under the License.
 #include <cstdlib>
 #include <string>
 #include <memory>
+#include <functional>
 
 /* for GLFW */
 #include <GLFW/glfw3.h>
@@ -35,6 +36,10 @@ limitations under the License.
 #include "ui.h"
 #include "rotation_matrix.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 /*** Macro ***/
 /* macro functions */
 #define RUN_CHECK(x)                                         \
@@ -46,7 +51,6 @@ limitations under the License.
 /* Setting */
 static constexpr float PROJECTION_OFFSET_CX = -0.2f; /* add offset for cx because we have UI bar on the left side */
 static constexpr float PROJECTION_OFFSET_CY = 0.2f; /* add offset for cx because we have UI bar on the left side */
-
 
 /*** Global variable ***/
 
@@ -137,8 +141,9 @@ int main(int argc, char *argv[])
     std::unique_ptr<Shape> object = ObjectData::CreateMonolith(0.5f, 0.8f, 0.01f, { 0.3f, 0.75f, 1.0f }, { 0.5f, 0.5f, 0.5f });
 
     /*** Start loop ***/
-    while(1) {
-        if (my_window.FrameStart() == false) break;
+    static std::function<void()> loop;
+    loop = [&]() {
+        if (my_window.FrameStart() == false) return;
 
         /* Draw bases */
         if (setting_container.is_draw_ground) {
@@ -196,8 +201,17 @@ int main(int argc, char *argv[])
 
         /* Update display */
         my_window.SwapBuffers();
-    }
-    
+    };
+
+#ifdef __EMSCRIPTEN__
+    struct dummy {
+        static void dummy_loop() { loop(); }
+    };
+    emscripten_set_main_loop(dummy::dummy_loop, 60, true);
+#else
+    while(true) loop();
+#endif
+
     /*** Finalize ***/
     glfwTerminate();
 

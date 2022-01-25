@@ -1,0 +1,43 @@
+name: Build and Deploy
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checkout Submodules  # To avoid "RPC failed; curl 56 GnuTLS recv error (-54): Error in the pull function."
+      run: |
+        git config --global http.postBuffer 100M
+        git submodule update --init --recursive --recommend-shallow --depth 1
+    - name: Install requirements
+      shell: bash
+      run: |
+          sudo apt-get -y install cmake g++
+          sudo apt-get -y install libglu1-mesa-dev mesa-common-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+    - name: build
+      run: |
+        docker run \
+          --rm \
+          -v $(pwd):/src \
+          -u $(id -u):$(id -g) \
+          emscripten/emsdk:3.1.1 \
+          sh ./build_emscripten.sh
+
+    - name: collect
+      run: |
+        mkdir public && cd public
+        cp ../build_em/*.html .
+        cp ../build_em/*.js .
+        cp ../build_em/*.wasm .
+
+    - name: deploy
+      uses: JamesIves/github-pages-deploy-action@v4.2.2
+      with:
+        branch: gh-pages
+        folder: public
+

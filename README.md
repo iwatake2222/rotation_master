@@ -1,6 +1,7 @@
 ![image](https://user-images.githubusercontent.com/11009876/148997642-8a54899a-8547-44a8-a211-b7d8f4b9b063.png)
 
 # Rotation Master
+- Try on a browser: https://iwatake2222.github.io/rotation_master/rotation_master.html
 - Provide conversion between the following representations of 3D rotation and display a rigid body orientation
     - Rotation Matrix
     - Rotation Vector
@@ -32,3 +33,5 @@ https://github.com/iwatake2222/rotation_master/wiki/How-to-Build
 - [NOTICE.md](NOTICE.md)
 - This project is inspired by 3D Rotation Converter
     - https://www.andre-gaschler.com/rotationconverter/
+- @astomih ported this project onto a browser using WASM. I used his code as a reference.
+    - https://github.com/astomih/rotation_master

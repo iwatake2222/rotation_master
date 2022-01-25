@@ -13,7 +13,9 @@ add_library(${LibraryName}
 target_link_libraries(${LibraryName} Matrix TransformationMatrix)
 target_include_directories(${LibraryName} PUBLIC ${CMAKE_CURRENT_LIST_DIR})    # add public so that test module can include header files
 
-target_link_libraries(${LibraryName} glfw ${GLFW_LIBRARIES})
-target_include_directories(${LibraryName} PUBLIC "${GLFW_DIR}/include/")
-target_link_libraries(${LibraryName} glew_s)
-target_include_directories(${LibraryName} PUBLIC "${GLEW_DIR}/include/")
+if (NOT EMSCRIPTEN)
+    target_link_libraries(${LibraryName} glfw ${GLFW_LIBRARIES})
+    target_include_directories(${LibraryName} PUBLIC "${GLFW_DIR}/include/")
+    target_link_libraries(${LibraryName} glew_s)
+    target_include_directories(${LibraryName} PUBLIC "${GLEW_DIR}/include/")
+endif()
