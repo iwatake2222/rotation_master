@@ -142,8 +142,12 @@ int main(int argc, char *argv[])
 
     /*** Start loop ***/
     static std::function<void()> loop;
+    bool is_exit = false;
     loop = [&]() {
-        if (my_window.FrameStart() == false) return;
+        if (my_window.FrameStart() == false) {
+            is_exit = true;
+            return;
+        }
 
         /* Draw bases */
         if (setting_container.is_draw_ground) {
@@ -209,7 +213,7 @@ int main(int argc, char *argv[])
     };
     emscripten_set_main_loop(dummy::dummy_loop, 60, true);
 #else
-    while(true) loop();
+    while(!is_exit) loop();
 #endif
 
     /*** Finalize ***/
