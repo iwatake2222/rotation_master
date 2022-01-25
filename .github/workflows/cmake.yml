@@ -49,21 +49,21 @@ jobs:
           echo "no need to install"
         fi
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}}/desktop -B ${{github.workspace}}/desktop/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -S ${{github.workspace}}/src -B ${{github.workspace}}/src/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
     - name: Build
-      run: cmake --build ${{github.workspace}}/desktop/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/src/build --config ${{env.BUILD_TYPE}}
     - name: Test
-      working-directory: ${{github.workspace}}/desktop/build
+      working-directory: ${{github.workspace}}/src/build
       run: ctest -C ${{env.BUILD_TYPE}}
     - name: Package
       shell: bash
       run: |
-        ls '${{github.workspace}}/desktop/build'
+        ls '${{github.workspace}}/src/build'
         if [[ "${{ matrix.os }}" == "windows-2019" ]]
         then
-          7z a ${{ matrix.artifact_name }} '${{github.workspace}}/desktop/build/Release/${{ matrix.exe_name }}'
+          7z a ${{ matrix.artifact_name }} '${{github.workspace}}/src/build/Release/${{ matrix.exe_name }}'
         else
-          tar czvf ${{ matrix.artifact_name }} -C ${{github.workspace}}/desktop/build ${{ matrix.exe_name }}
+          tar czvf ${{ matrix.artifact_name }} -C ${{github.workspace}}/src/build ${{ matrix.exe_name }}
         fi
         ls
     - name: Upload Artifacts
