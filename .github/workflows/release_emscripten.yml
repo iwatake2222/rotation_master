@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: WASM Deploy
 on:
   push:
     branches: [ master ]

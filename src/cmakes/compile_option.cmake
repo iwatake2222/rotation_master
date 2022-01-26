@@ -20,7 +20,8 @@ if (EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGLFW_INCLUDE_ES3 -DIMGUI_IMPL_OPENGL_ES3 \
         -s USE_WEBGL2=1 \
         -s FULL_ES3=1 \
-        -s USE_GLFW=3"
+        -s USE_GLFW=3 \
+        --shell-file ${CMAKE_CURRENT_LIST_DIR}/../../html_template/shell_minimal.html"
     )
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -DNDEBUG")
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
