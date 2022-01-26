@@ -66,10 +66,16 @@ void Window::CbResize(GLFWwindow* window, int32_t width, int32_t height)
 
 void Window::CbWheel(GLFWwindow* window, double x, double y)
 {
+    float direction = 0;
+#ifdef __EMSCRIPTEN__
+    direction = (y > 0) ? 1.0f : -1.0f;
+#else
+    direction = (y < 0) ? 1.0f : -1.0f;
+#endif
     Window* const instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
     if (instance) {
         //instance->m_camera_pos[2] -= static_cast<float>(y) * MOUSE_WHEEL_SPEED;
-        instance->MoveCameraPosFromCameraCoordinate(0, 0, -static_cast<float>(y) * MOUSE_WHEEL_SPEED);
+        instance->MoveCameraPosFromCameraCoordinate(0, 0, direction * MOUSE_WHEEL_SPEED);
     }
 }
 
@@ -179,8 +185,10 @@ Window::Window(int32_t width, int32_t height, const char* title)
     glfwSetWindowUserPointer(m_window, this);
 
     /* Ensure not to miss input */
+#ifndef __EMSCRIPTEN__
     glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE);
     glfwSetInputMode(m_window, GLFW_STICKY_MOUSE_BUTTONS, GL_TRUE);
+#endif
 
     /* Set callback */
     glfwSetWindowSizeCallback(m_window, CbResize);

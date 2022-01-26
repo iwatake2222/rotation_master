@@ -19,7 +19,6 @@ Status | Details
 [![CodeQL](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/codeql-analysis.yml) | ubuntu-20.04
 [![WASM Deploy](https://github.com/iwatake2222/rotation_master/actions/workflows/release_emscripten.yml/badge.svg)](https://github.com/iwatake2222/rotation_master/actions/workflows/release_emscripten.yml) | https://iwatake2222.github.io/rotation_master/rotation_master.html
 
-
 ## How to Use
 https://github.com/iwatake2222/rotation_master/wiki/How-to-Use
 
@@ -37,3 +36,5 @@ https://github.com/iwatake2222/rotation_master/wiki/How-to-Build
     - https://www.andre-gaschler.com/rotationconverter/
 - @astomih ported this project onto a browser using WASM + Emscripten. I used his/her code as a reference
     - https://github.com/astomih/rotation_master
+- I learned OpenGL + GLFW using the following material. Some sample code are used in this project
+    - https://tokoik.github.io/GLFWdraft.pdf : GLFW による OpenGL 入門 (PDF)
